@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nupur's Prep</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --bg:#FBF3F1;--surf:#FFFCFB;--surf2:#F5E9E8;--line:#EBDCDD;--line2:#DCC8CB;
+  --text:#3A2E39;--muted:#7F6C79;--acc:#9A5B6E;--acc-h:#874C5E;--acc2:#C98FA0;--accsoft:#F4E0E5;
+  --ok:#3E7D62;--ok2:#7DB89D;--oksoft:#E1F1E8;--over:#C2655B;--oversoft:#F8E1DD;--warn:#9A6A1F;--warnsoft:#FBEFD9;
+  --c-rose:#E3AEBB;--c-lavender:#C3B6E3;--c-peach:#F2C9AE;--c-mint:#B3DCC9;--c-sky:#B5CCE6;--c-butter:#EEDCA5;--c-sage:#C2D3B1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:Figtree,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --r:12px;--r-sm:8px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);font-variant-numeric:tabular-nums}
+a{color:var(--acc)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topin{max-width:1080px;margin:0 auto;padding:10px max(18px,env(safe-area-inset-left)) 10px max(18px,env(safe-area-inset-right));display:flex;align-items:center;gap:14px}
+.brand{font:600 19px/1 var(--serif);letter-spacing:-.01em;white-space:nowrap;color:var(--text);text-decoration:none}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{padding:6px 11px;border-radius:999px;color:var(--muted);font-size:14px;white-space:nowrap;text-decoration:none;display:flex;align-items:center;gap:6px}
+nav.tabs a:hover{color:var(--text)}
+nav.tabs a[aria-current="page"]{color:var(--text);background:var(--surf2)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none;background:var(--c-rose)}
+.c-rose{background:var(--c-rose)}.c-lavender{background:var(--c-lavender)}.c-peach{background:var(--c-peach)}.c-mint{background:var(--c-mint)}.c-sky{background:var(--c-sky)}.c-butter{background:var(--c-butter)}.c-sage{background:var(--c-sage)}
+.topact{display:flex;gap:8px;align-items:center}
+.me{all:unset;cursor:pointer;width:32px;height:32px;border-radius:50%;background:var(--accsoft);color:var(--acc);display:grid;place-items:center;font-weight:600;font-size:14px}
+.me:focus-visible{outline:2px solid var(--acc)}
+
+main{max-width:1080px;margin:0 auto;padding:26px 18px 90px}
+h1{font:600 28px/1.2 var(--serif);margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:16px;margin:0;font-weight:600}
+h3{font-size:15px;margin:0 0 6px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}.small{font-size:13px}
+.sec{margin-top:30px}
+.sech{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.box{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+
+/* buttons and inputs */
+.btn{cursor:pointer;border:1px solid var(--line2);background:var(--surf);padding:7px 14px;border-radius:var(--r-sm);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none;color:var(--text)}
+.btn:hover{border-color:var(--acc2)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:hover{background:var(--acc-h)}
+.btn.soft{background:var(--accsoft);border-color:transparent;color:var(--acc)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.danger{color:var(--over)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.go{padding:10px 18px;font-size:15px;border-radius:999px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],select,textarea{background:#fff;border:1px solid var(--line2);border-radius:var(--r-sm);padding:7px 10px;font-size:14px;width:100%}
+textarea{min-height:70px;resize:vertical;line-height:1.5}
+select{width:auto;padding-right:28px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc2);outline-offset:0;border-color:var(--acc2)}
+label.f{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.field{margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+
+/* dashboard */
+.hello{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat b{display:block;font-size:22px;font-weight:600;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+.rsum{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center}
+.rw{position:relative;width:118px;height:118px;flex:none}
+.rw.lg{width:168px;height:168px}
+.ring{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9}
+.ring .rt{stroke:var(--surf2)}
+.ring .rp{stroke:var(--acc2);stroke-linecap:round;transition:stroke-dasharray .5s ease}
+.ring .rp.ok{stroke:var(--ok2)}
+.ring .ro{stroke:var(--over)}
+.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.rc b{font-size:22px;font-weight:600}
+.rw.lg .rc b{font-size:30px}
+.rc span{font-size:12.5px;color:var(--muted)}
+dl.kv{display:grid;grid-template-columns:auto auto;gap:5px 22px;margin:0;width:max-content;max-width:100%}
+dl.kv dt{color:var(--muted)}
+dl.kv dd{margin:0;text-align:right;font-weight:600}
+dd.over{color:var(--over)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.tgs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tg{display:flex;gap:16px;align-items:center}
+.wks{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.wl{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:14px}
+.track{height:8px;background:var(--surf2);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--acc2);border-radius:99px}
+.track.ok i{background:var(--ok2)}
+.subtbl{width:100%;border-collapse:collapse;font-size:14px}
+.subtbl th{font-weight:500;color:var(--muted);text-align:right;padding:6px 8px;font-size:13px}
+.subtbl th:first-child,.subtbl td:first-child{text-align:left}
+.subtbl td{padding:9px 8px;border-top:1px solid var(--line);text-align:right}
+.subtbl td.over{color:var(--over);font-weight:600}
+.subtbl .sname{display:flex;align-items:center;gap:8px;color:var(--text);text-decoration:none;font-weight:500}
+.tblwrap{overflow-x:auto}
+
+/* list rows */
+.rgroup{margin-top:16px}
+.rgh{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-bottom:6px}
+.rgh .n{font-weight:500;color:var(--muted)}
+.rgh.over{color:var(--over)}
+.list{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.ritem{display:flex;gap:14px;align-items:center;padding:11px 14px;border-top:1px solid var(--line)}
+.ritem:first-child{border-top:0}
+.ritem .rx{flex:1;min-width:0}
+.ritem .qs{font-size:14.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ritem .qs .katex{font-size:1em}
+.ritem .meta{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ritem .a{display:flex;gap:6px;flex:none;align-items:center}
+.qn{font-size:12.5px;color:var(--muted);width:26px;flex:none;text-align:right}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--surf2);color:var(--muted);white-space:nowrap}
+.tag.ok{background:var(--oksoft);color:var(--ok)}
+.tag.bad{background:var(--oversoft);color:var(--over)}
+.tag.due{background:var(--accsoft);color:var(--acc)}
+.tag.warn{background:var(--warnsoft);color:var(--warn)}
+.over{color:var(--over)}
+.more{all:unset;cursor:pointer;display:block;padding:9px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--acc)}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+
+/* subject page */
+.shead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.sbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 12px}
+.filters input[type=search]{max-width:260px}
+.seg{display:inline-flex;background:var(--surf2);border-radius:999px;padding:3px}
+.seg button{all:unset;cursor:pointer;padding:5px 12px;border-radius:999px;font-size:13.5px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surf);color:var(--text);box-shadow:0 1px 2px rgba(80,40,60,.08)}
+.seg button:focus-visible{outline:2px solid var(--acc)}
+.prog{margin-top:14px;max-width:520px}
+.letsgo{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* session */
+.sess{max-width:760px;margin:0 auto}
+.stop{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.stop .grow .track{margin-top:6px}
+.qcard{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+.qmeta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+.dir{background:var(--surf2);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:14.5px;max-height:340px;overflow:auto}
+.dir .dlab{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.qtext{font:400 18px/1.6 var(--serif);margin-bottom:16px;overflow-x:auto}
+.rt table{border-collapse:collapse;margin:8px 0;font:14px/1.4 var(--sans)}
+.rt th,.rt td{border:1px solid var(--line2);padding:5px 9px;text-align:left}
+.rt th{background:var(--surf2);font-weight:600}
+.tblx{overflow-x:auto;max-width:100%}
+.figs{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.figs img{max-width:100%;border:1px solid var(--line);border-radius:10px;cursor:zoom-in;background:#fff}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{all:unset;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line2);border-radius:10px;background:#fff;font-size:15.5px}
+.opt:hover{border-color:var(--acc2)}
+.opt:focus-visible{outline:2px solid var(--acc)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:13px;font-weight:600;color:var(--muted)}
+.opt[aria-checked="true"]{border-color:var(--acc);background:var(--accsoft)}
+.opt[aria-checked="true"] .k{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt.right{border-color:var(--ok2);background:var(--oksoft)}
+.opt.right .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opts.locked .opt{cursor:default}
+.ansin{max-width:320px;font-size:16px!important;padding:10px 12px!important}
+.qact{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.yay{margin-top:16px;padding:12px 16px;border-radius:12px;background:var(--oksoft);color:var(--ok);font-weight:600;font-size:16px}
+.yay.anim{animation:pop .35s ease-out}
+@keyframes pop{0%{transform:scale(.96);opacity:0}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.yay.anim{animation:none}.ring .rp{transition:none}}
+.reveal{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--surf);overflow:hidden}
+.rbar{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;box-sizing:border-box;padding:12px 16px;font-weight:500;font-size:14.5px}
+.rbar:hover{background:var(--surf2)}
+.rbar:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.rbar .chev{transition:transform .2s;color:var(--muted)}
+.rbar[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.rbody{padding:4px 16px 16px;font-size:15px}
+.rbody .lab{font-size:12.5px;color:var(--muted);margin:10px 0 3px}
+.sfoot{display:flex;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}
+
+/* add / review */
+.drop{border:2px dashed var(--line2);border-radius:16px;background:var(--surf);padding:34px 20px;text-align:center;cursor:pointer}
+.drop.on{border-color:var(--acc);background:var(--accsoft)}
+.drop b{display:block;font-size:16px;margin-bottom:4px}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.thumb{position:relative;width:110px}
+.thumb img{width:110px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.thumb .st{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}
+.thumb .st.bad{color:var(--over)}
+.thumb .x{position:absolute;top:-7px;right:-7px;all:unset;cursor:pointer;width:22px;height:22px;border-radius:50%;background:var(--text);color:#fff;display:grid;place-items:center;font-size:13px;position:absolute}
+.draft{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.draft.off{opacity:.6}
+.dh{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.dh label{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.dgrid select,.dgrid input{width:100%}
+.optrow{display:flex;gap:6px;margin-bottom:6px}
+.optrow .k{width:52px;flex:none;text-align:center}
+.pv{margin-top:6px;padding:10px 12px;border-radius:8px;background:var(--surf2);font-size:14px}
+.pv .lab{font-size:12px;color:var(--muted);margin-bottom:2px}
+.dup{border:1px solid #EBCB97;background:var(--warnsoft);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+.dup .m{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid #F0DDB8}
+.dup .m:first-of-type{border-top:0}
+.crop{position:relative;display:inline-block;max-width:100%;cursor:crosshair;user-select:none;touch-action:none;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.crop img{display:block;max-width:100%;max-height:520px;pointer-events:none}
+.crop .bx{position:absolute;border:2px solid var(--acc);background:rgba(154,91,110,.12);box-shadow:0 0 0 9999px rgba(58,46,57,.28);pointer-events:none}
+.savebar{position:sticky;bottom:0;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.errs{color:var(--over);font-size:13.5px;margin-top:6px}
+
+/* modal, toast, auth */
+.modal{position:fixed;inset:0;background:rgba(58,46,57,.38);display:none;align-items:flex-start;justify-content:center;padding:5vh 14px;z-index:60;overflow-y:auto}
+.modal.open{display:flex}
+.mbox{background:var(--surf);border-radius:16px;width:100%;max-width:720px;padding:22px;box-shadow:0 20px 60px rgba(58,46,57,.18)}
+.mbox.wide{max-width:900px}
+.mbox.img{max-width:1000px;padding:12px}
+.mbox.img img{max-width:100%;display:block;margin:0 auto}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.mh h2{font:600 20px/1.3 var(--serif)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+.toast.show{opacity:1}
+.toast.bad{background:var(--over)}
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px}
+.authbox{width:100%;max-width:390px;background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:30px 28px}
+.authbox h1{font-size:30px}
+.authbox .btn.pri{width:100%;justify-content:center;padding:10px}
+.loading{padding:60px;text-align:center;color:var(--muted)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.menu{position:absolute;right:18px;top:52px;background:var(--surf);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(58,46,57,.12);padding:6px;min-width:200px;z-index:40}
+.menu button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding:8px 12px;border-radius:8px;font-size:14px}
+.menu button:hover{background:var(--surf2)}
+.menu .em{padding:8px 12px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line);margin-bottom:4px;word-break:break-all}
+.toprel{position:relative}
+.topicl .ritem input{max-width:320px}
+
+@media (max-width:760px){
+  .topin{flex-wrap:wrap;row-gap:6px}
+  nav.tabs{order:3;flex-basis:100%}
+  .topact{margin-left:auto}
+  .stats{grid-template-columns:1fr 1fr}
+  .rsum{grid-template-columns:1fr;justify-items:center}
+  .tgs,.wks{grid-template-columns:1fr}
+  .dgrid{grid-template-columns:1fr 1fr}
+  .ritem{flex-wrap:wrap}
+  .ritem .a{width:100%;justify-content:flex-end}
+  .qcard{padding:18px 16px}
+  .qtext{font-size:17px}
+  h1{font-size:24px}
+  .brand{font-size:17px}
+  .topact .btn .lbl{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading"><span class="spin"></span> Loading</div></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="filepick" accept="image/png,image/jpeg,image/webp" multiple class="sr" aria-label="Choose screenshots">
+<script>
+(function(){
+'use strict';
+/* ================================================================ config
+   The publishable key is designed to be public. Row Level Security in the
+   database keeps every account's data private. The OpenAI key is NOT here:
+   it lives only in the Supabase Edge Function secret OPENAI_API_KEY. */
+const CFG={
+  url:'https://tbwhfzfovjrvquqvbgdm.supabase.co',
+  key:'sb_publishable_9qRl7S3tKgNsLJUkXB7g-w_-y7BEAWK',
+  fn:'question-ai',
+  bucket:'question-images'
+};
+const sb=window.supabase.createClient(CFG.url,CFG.key);
+
+/* ================================================================ helpers */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const isoOf=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>isoOf(new Date());
+const addDays=(iso,n)=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return isoOf(d);};
+const diffDays=(a,b)=>Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt=iso=>{if(!iso)return '';const d=new Date(iso+'T00:00:00');return d.getDate()+' '+MON[d.getMonth()];};
+const rel=iso=>{if(!iso)return '';const n=diffDays(today(),iso);return n===0?'today':n===1?'tomorrow':n===-1?'yesterday':n<0?(-n)+' days ago':'in '+n+' days';};
+const pct=(a,b)=>b?Math.round(a*100/b):0;
+const uuid=()=>crypto.randomUUID?crypto.randomUUID():'x'+Date.now()+Math.random().toString(16).slice(2);
+const normT=s=>String(s??'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+async function q(p){const {data,error}=await p;if(error)throw error;return data;}
+function errText(e){
+  const m=(e&&(e.message||e.error_description||e.details))||String(e||'');
+  if(/Failed to fetch|NetworkError|network/i.test(m))return 'No connection. Check your internet and try again.';
+  return m;
+}
+let toastT=null;
+function toast(msg,bad){const t=$('#toast');t.textContent=msg;t.className='toast show'+(bad?' bad':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='toast',bad?5200:2600);}
+const debounce=(f,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms);};};
+
+/* rich text: escaped text + Markdown tables + LaTeX (rendered by KaTeX) */
+function rich(t){
+  if(!t)return '';
+  const lines=String(t).replace(/\r/g,'').split('\n');
+  let out=[],i=0;
+  const isRow=l=>/^\s*\|.*\|\s*$/.test(l);
+  while(i<lines.length){
+    if(isRow(lines[i])){
+      const rows=[];while(i<lines.length&&isRow(lines[i]))rows.push(lines[i++]);
+      out.push(tableHtml(rows));
+    }else out.push(esc(lines[i++])+'<br>');
+  }
+  return out.join('').replace(/(<br>)+$/,'');
+}
+function tableHtml(rows){
+  const cells=r=>r.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(c=>c.trim());
+  const sep=r=>/^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(r);
+  let head=null,body=rows;
+  if(rows.length>1&&sep(rows[1])){head=cells(rows[0]);body=rows.slice(2);}
+  body=body.filter(r=>!sep(r));
+  return '<div class="tblx"><table>'+(head?'<thead><tr>'+head.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead>':'')+
+    '<tbody>'+body.map(r=>'<tr>'+cells(r).map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+}
+function plainLines(t){return String(t||'').split('\n').filter(l=>!/^\s*\|/.test(l)).join(' ');}
+function math(root=document){
+  if(!window.renderMathInElement)return;
+  $$('.rt:not([data-k])',root).forEach(el=>{
+    el.dataset.k='1';
+    try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});}catch(e){}
+  });
+}
+
+/* ================================================================ state */
+const D={user:null,subjects:[],topics:[],qs:[],qm:new Map(),att:[],settings:null,uploads:[]};
+const UI={filters:{},menu:false};
+let SESSION=null;   // current practice/revision session
+let REVIEW=null;    // drafts waiting for review: {drafts:[],uploads:[]}
+const subj=id=>D.subjects.find(s=>s.id===id);
+const topic=id=>D.topics.find(t=>t.id===id);
+const topicsOf=sid=>D.topics.filter(t=>t.subject_id===sid).sort((a,b)=>a.sort-b.sort||a.name.localeCompare(b.name));
+const indexQs=()=>{D.qm=new Map(D.qs.map(x=>[x.id,x]));};
+
+async function fetchAll(table,cols='*',f=b=>b){
+  const out=[];let from=0;
+  for(;;){
+    const r=await q(f(sb.from(table).select(cols)).order('created_at').range(from,from+999));
+    out.push(...r);if(r.length<1000)break;from+=1000;
+  }
+  return out;
+}
+async function loadAll(){
+  await q(sb.rpc('ensure_seed'));
+  const [s,t,st]=await Promise.all([
+    q(sb.from('subjects').select('*').order('sort')),
+    q(sb.from('topics').select('*').order('sort')),
+    q(sb.from('user_settings').select('*').maybeSingle())]);
+  D.subjects=s;D.topics=t;
+  D.settings=st||{daily_revision_target:20,daily_practice_target:20,weekly_revision_target:100,weekly_practice_target:100};
+  const since=addDays(today(),-75);
+  const [qs,att,ups]=await Promise.all([
+    fetchAll('questions'),
+    fetchAll('attempts','id,question_id,mode,day,is_correct,grade,scheduled,created_at',b=>b.gte('day',since)),
+    q(sb.from('uploads').select('id,storage_path,subject_hint,status,error,created_at,result').neq('status','saved').order('created_at'))]);
+  D.qs=qs;D.att=att;D.uploads=ups;indexQs();
+}
+
+/* signed image URLs (bucket is private) */
+const URLS=new Map();
+async function signed(paths){
+  const now=Date.now(),need=[...new Set(paths)].filter(p=>p&&!(URLS.get(p)&&URLS.get(p).exp>now+60000));
+  if(need.length){
+    const {data,error}=await sb.storage.from(CFG.bucket).createSignedUrls(need,3600);
+    if(!error)for(const d of data||[])if(d.signedUrl)URLS.set(d.path,{url:d.signedUrl,exp:now+3500e3});
+  }
+  return p=>URLS.get(p)&&URLS.get(p).url;
+}
+async function hydrateImages(root=document){
+  const imgs=$$('img[data-path]:not([src])',root);if(!imgs.length)return;
+  const get=await signed(imgs.map(i=>i.dataset.path));
+  imgs.forEach(i=>{const u=get(i.dataset.path);if(u)i.src=u;else i.alt='Image could not be loaded';});
+}
+
+/* ================================================================ stats */
+function revBuckets(sid){
+  const t=today(),o={over:[],due:[],up:[],done:[],weak:[]};
+  for(const x of D.qs){
+    if(sid&&x.subject_id!==sid)continue;
+    if(x.lapses>=3)o.weak.push(x);
+    const n=x.next_review;if(!n)continue;
+    (n<t?o.over:n===t?o.due:o.up).push(x);
+  }
+  const seen=new Set();
+  for(const a of D.att){
+    if(a.mode!=='revision'||a.day!==t||seen.has(a.question_id))continue;
+    seen.add(a.question_id);const x=D.qm.get(a.question_id);
+    if(x&&(!sid||x.subject_id===sid))o.done.push(x);
+  }
+  const byNext=(a,b)=>a.next_review.localeCompare(b.next_review)||b.lapses-a.lapses;
+  o.over.sort(byNext);o.due.sort((a,b)=>b.lapses-a.lapses||a.ease-b.ease);o.up.sort(byNext);
+  o.weak.sort((a,b)=>b.lapses-a.lapses);
+  return o;
+}
+function countDistinct(mode,from,to){
+  const s=new Set();
+  for(const a of D.att)if(a.mode===mode&&a.day>=from&&a.day<=to)s.add(a.question_id+(mode==='practice'?'':a.day));
+  return s.size;
+}
+function weekStart(iso){const d=new Date(iso+'T00:00:00');const w=(d.getDay()+6)%7;d.setDate(d.getDate()-w);return isoOf(d);}
+function streak(){
+  const days=new Set(D.att.map(a=>a.day));let d=today(),n=0;
+  if(!days.has(d))d=addDays(d,-1);
+  while(days.has(d)){n++;d=addDays(d,-1);}
+  return n;
+}
+function accuracy(){
+  const from=addDays(today(),-29);let c=0,n=0;
+  for(const a of D.att)if(a.day>=from){n++;if(a.is_correct)c++;}
+  return n?pct(c,n)+'%':'–';
+}
+
+/* ================================================================ widgets */
+function ring(done,total,o={}){
+  const C=2*Math.PI*42,f=total?Math.min(1,done/total):0,ov=total?Math.min(1-f,(o.over||0)/total):0;
+  return `<svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rt" cx="50" cy="50" r="42"/>${f>0?`<circle class="rp${o.ok?' ok':''}" cx="50" cy="50" r="42" stroke-dasharray="${(f*C).toFixed(2)} ${C.toFixed(2)}" style="stroke-linecap:${ov>0?'butt':'round'}"/>`:''}${ov>0?`<circle class="ro" cx="50" cy="50" r="42" stroke-dasharray="${(ov*C).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${(-f*C).toFixed(2)}"/>`:''}</svg>`;
+}
+function ringBox(done,total,sub,o={}){
+  return `<div class="rw${o.lg?' lg':''}" role="img" aria-label="${esc(o.aria||done+' of '+total)}">${ring(done,total,o)}<div class="rc"><b>${done}/${total}</b><span>${esc(sub)}</span></div></div>`;
+}
+function targetBlock(title,done,target){
+  const left=Math.max(0,target-done);
+  return `<div class="tg">${target?ringBox(done,target,done>=target?'Target met':left+' left',{ok:done>=target,aria:title+': '+done+' of '+target}):ringBox(done,0,'No target')}
+  <div><h3>${title}</h3><dl class="kv"><dt>Target</dt><dd>${target||'Not set'}</dd><dt>Done</dt><dd>${done}</dd><dt>Left</dt><dd>${left}</dd></dl></div></div>`;
+}
+function weekBar(label,done,target){
+  const w=target?Math.min(100,pct(done,target)):0;
+  return `<div><div class="wl"><span>${label}</span><span class="muted small">${done} of ${target||'–'}</span></div><div class="track${done>=target&&target?' ok':''}"><i style="width:${w}%"></i></div></div>`;
+}
+function qSnippet(x){return `<div class="qs rt">${rich(plainLines(x.question_text))}</div>`;}
+function qMeta(x,extra=''){
+  const s=subj(x.subject_id),t=topic(x.topic_id);
+  return `<div class="meta"><span class="dot c-${esc(s?s.color:'rose')}"></span>${esc(s?s.short_name:'')}${t?', '+esc(t.name):''}${extra}</div>`;
+}
+function revItem(x,mode){
+  const n=x.next_review,t=today();
+  let st='';
+  if(mode==='done'){const a=[...D.att].reverse().find(a=>a.question_id===x.id&&a.mode==='revision'&&a.day===t);st=`<span class="tag ${a&&a.is_correct?'ok':'bad'}">${a&&a.is_correct?'Revised':'Forgot'}</span> <span>Next ${fmt(n)}</span>`;}
+  else if(n)st=n<t?`<span class="tag bad">Overdue ${rel(n)}</span>`:n===t?'<span class="tag due">Due today</span>':`<span>Next ${fmt(n)}, ${rel(n)}</span>`;
+  if(x.lapses>=3)st+=' <span class="tag warn">Weak</span>';
+  const btn=(mode==='over'||mode==='due'||mode==='weak')?`<button class="btn sm pri" data-act="revise1" data-id="${x.id}">Start revising</button>`:'';
+  return `<div class="ritem"><div class="rx">${qSnippet(x)}${qMeta(x,' '+st)}</div><div class="a">${btn}<button class="btn sm ghost" data-act="view" data-id="${x.id}" aria-label="Open question">Open</button></div></div>`;
+}
+function revGroup(title,items,mode,cls,limit){
+  if(!items.length)return '';
+  const key='g_'+mode,all=UI[key];
+  const shown=all?items:items.slice(0,limit);
+  return `<div class="rgroup"><div class="rgh ${cls}">${title} <span class="n">${items.length}</span></div><div class="list">${shown.map(x=>revItem(x,mode)).join('')}${items.length>limit?`<button class="more" data-act="more" data-k="${key}">${all?'Show fewer':'Show all '+items.length}</button>`:''}</div></div>`;
+}
+
+/* ================================================================ views: home */
+const V={};
+V.home=()=>{
+  const t=today(),B=revBuckets(),up7=B.up.filter(x=>x.next_review<=addDays(t,7));
+  const dueTot=B.done.length+B.due.length+B.over.length,remaining=B.due.length+B.over.length;
+  const S=D.settings,ws=weekStart(t),we=addDays(ws,6);
+  const pd=countDistinct('practice',t,t),rd=B.done.length,pw=countDistinct('practice',ws,we),rw=countDistinct('revision',ws,we);
+  const attempted=D.qs.filter(x=>x.attempt_count>0).length;
+  const h=new Date().getHours(),greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const rows=D.subjects.map(s=>{
+    const b=revBuckets(s.id),u7=b.up.filter(x=>x.next_review<=addDays(t,7)).length,tot=D.qs.filter(x=>x.subject_id===s.id).length;
+    const pend=b.due.length+b.over.length;
+    return `<tr><td><a class="sname" href="#/s/${s.id}"><span class="dot c-${esc(s.color)}"></span>${esc(s.short_name)}</a></td><td>${b.due.length+b.done.length}</td><td class="${b.over.length?'over':''}">${b.over.length}</td><td>${b.done.length}</td><td>${u7}</td><td>${tot}</td><td>${pend?`<button class="btn sm" data-act="revise" data-sid="${s.id}">Revise ${pend}</button>`:'<span class="muted small">Clear</span>'}</td></tr>`;
+  }).join('');
+  return `<div class="hello"><div><h1>${greet}, Nupur</h1><p class="muted">${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}. ${remaining?plural(remaining,'question')+' to revise today.':'Nothing left to revise today.'}</p></div>
+  ${remaining?`<button class="btn pri go" data-act="revise">Start revising (${remaining})</button>`:''}</div>
+  <section class="sec"><div class="sech"><h2>Today's revision</h2></div>
+  <div class="box rsum">${ringBox(B.done.length,dueTot,dueTot?(remaining?remaining+' remaining':'All done'):'Nothing due',{lg:true,over:B.over.length,ok:dueTot>0&&!remaining,aria:`Revisions today: ${B.done.length} of ${dueTot} done, ${B.over.length} overdue`})}
+   <div><dl class="kv"><dt>Due today</dt><dd>${B.due.length+B.done.length}</dd><dt>Completed today</dt><dd>${B.done.length}</dd><dt>Remaining today</dt><dd>${remaining}</dd><dt>Overdue</dt><dd class="${B.over.length?'over':''}">${B.over.length}</dd><dt>Upcoming, next 7 days</dt><dd>${up7.length}</dd><dt>In your revision plan</dt><dd>${D.qs.filter(x=>x.next_review).length}</dd></dl>
+   <div class="legend"><span><i style="background:var(--acc2)"></i>Completed</span><span><i style="background:var(--over)"></i>Overdue</span><span><i style="background:var(--surf2)"></i>Due, not done</span></div></div></div></section>
+  <div class="stats"><div class="stat"><b>${D.qs.length}</b><span>Questions in your bank</span></div><div class="stat"><b>${attempted}</b><span>Solved at least once</span></div><div class="stat"><b>${accuracy()}</b><span>Accuracy, last 30 days</span></div><div class="stat"><b>${streak()}</b><span>Day streak</span></div></div>
+  <section class="sec"><div class="sech"><h2>Revision by subject</h2></div>
+  <div class="box tblwrap" style="padding:6px 10px"><table class="subtbl"><thead><tr><th>Subject</th><th>Due today</th><th>Overdue</th><th>Done today</th><th>Next 7 days</th><th>Questions</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></section>
+  <section class="sec"><div class="sech"><h2>Revision list</h2></div>
+  ${revGroup('Overdue',B.over,'over','over',8)}${revGroup('Due today',B.due,'due','',8)}${revGroup('Completed today',B.done,'done','',5)}${revGroup('Upcoming, next 7 days',up7,'up','',5)}${revGroup('Weak questions, forgotten 3 or more times',B.weak,'weak','',5)}
+  ${!B.over.length&&!B.due.length&&!B.done.length&&!up7.length?`<div class="box empty">No revisions scheduled yet. Practise a question once and it joins your revision plan automatically.<div style="margin-top:12px"><a class="btn pri" href="#/add">Add your first questions</a></div></div>`:''}</section>
+  <section class="sec"><div class="sech"><h2>Targets</h2><button class="btn sm" data-act="settings">Change targets</button></div>
+  <div class="box tgs">${targetBlock('Revisions today',rd,S.daily_revision_target)}${targetBlock('Questions practised today',pd,S.daily_practice_target)}</div>
+  <div class="box wks" style="margin-top:10px">${weekBar('Revisions this week',rw,S.weekly_revision_target)}${weekBar('Questions practised this week',pw,S.weekly_practice_target)}</div></section>`;
+};
+
+/* ================================================================ views: subject */
+function filt(sid){return UI.filters[sid]||(UI.filters[sid]={status:'unsolved',topic:'',diff:'',q:'',count:'20'});}
+function subjectList(sid){
+  const f=filt(sid),t=today(),needle=normT(f.q);
+  let l=D.qs.filter(x=>x.subject_id===sid);
+  if(f.topic)l=l.filter(x=>f.topic==='none'?!x.topic_id:x.topic_id===f.topic);
+  if(f.diff)l=l.filter(x=>String(x.difficulty)===f.diff);
+  if(needle)l=l.filter(x=>normT(x.directions+' '+x.question_text+' '+x.notes).includes(needle));
+  const st=f.status;
+  if(st==='unsolved')l=l.filter(x=>!x.attempt_count);
+  else if(st==='solved')l=l.filter(x=>x.attempt_count>0);
+  else if(st==='due')l=l.filter(x=>x.next_review&&x.next_review<=t);
+  else if(st==='weak')l=l.filter(x=>x.lapses>=3||x.last_result==='wrong');
+  return l;
+}
+function practiceOrder(l){
+  const rank=x=>!x.attempt_count?0:x.last_result==='wrong'?1:2;
+  return [...l].sort((a,b)=>rank(a)-rank(b)||(a.last_attempt_at||'').localeCompare(b.last_attempt_at||'')||a.created_at.localeCompare(b.created_at));
+}
+V.subject=sid=>{
+  const s=subj(sid);if(!s)return `<div class="box empty">This subject does not exist. <a href="#/">Go home</a></div>`;
+  const f=filt(sid),all=D.qs.filter(x=>x.subject_id===sid),solved=all.filter(x=>x.attempt_count>0).length;
+  const B=revBuckets(sid),pend=B.due.length+B.over.length,l=subjectList(sid),tops=topicsOf(sid);
+  const seg=(v,label)=>`<button data-act="fset" data-k="status" data-v="${v}" aria-pressed="${f.status===v}">${label}</button>`;
+  const shown=l.slice(0,UI['sl_'+sid]||60);
+  const t=today();
+  return `<div class="shead"><div><h1><span class="dot c-${esc(s.color)}" style="width:12px;height:12px;margin-right:8px;vertical-align:4px"></span>${esc(s.name)}</h1>
+   <p class="muted">${plural(all.length,'question')}, ${solved} solved, ${all.length-solved} unsolved. ${pend?`<b class="over">${pend} due for revision.</b>`:'Nothing due for revision.'}</p>
+   <div class="prog"><div class="track"><i style="width:${pct(solved,all.length)}%"></i></div></div></div>
+   <div class="sbar"><a class="btn" href="#/add/${sid}">Add question</a>${pend?`<button class="btn soft" data-act="revise" data-sid="${sid}">Revise due (${pend})</button>`:''}</div></div>
+  <div class="box" style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+   <div><b>Practice one question at a time</b><p class="muted small">Uses the filters below. Unsolved questions come first.</p></div>
+   <div class="letsgo"><label class="sr" for="cnt">How many questions</label><select id="cnt" data-f="count">${['10','20','30','50','all'].map(v=>`<option value="${v}"${f.count===v?' selected':''}>${v==='all'?'All':v} questions</option>`).join('')}</select>
+   <button class="btn pri go" data-act="letsgo" data-sid="${sid}" ${l.length?'':'disabled'}>Nupur Let's Go 😉</button></div></div>
+  <div class="filters"><div class="seg" role="group" aria-label="Show">${seg('unsolved','Unsolved')}${seg('all','All')}${seg('solved','Solved')}${seg('due','Due')}${seg('weak','Got wrong')}</div>
+   <label class="sr" for="ft">Topic</label><select id="ft" data-f="topic"><option value="">All topics</option>${tops.map(tp=>`<option value="${tp.id}"${f.topic===tp.id?' selected':''}>${esc(tp.name)} (${all.filter(x=>x.topic_id===tp.id).length})</option>`).join('')}<option value="none"${f.topic==='none'?' selected':''}>No topic</option></select>
+   <label class="sr" for="fd">Difficulty</label><select id="fd" data-f="diff"><option value="">Any difficulty</option><option value="1"${f.diff==='1'?' selected':''}>Easy</option><option value="2"${f.diff==='2'?' selected':''}>Medium</option><option value="3"${f.diff==='3'?' selected':''}>Hard</option></select>
+   <input type="search" data-f="q" placeholder="Search questions" value="${esc(f.q)}" aria-label="Search questions">
+   <button class="btn sm ghost" data-act="topics" data-sid="${sid}">Manage topics</button></div>
+  <p class="small muted" style="margin-bottom:8px">${plural(l.length,'question')} shown</p>
+  <div class="list">${shown.length?shown.map((x,i)=>{
+    const tp=topic(x.topic_id),d={1:'Easy',2:'Medium',3:'Hard'}[x.difficulty];
+    const st=!x.attempt_count?'<span class="tag">Unsolved</span>':x.last_result==='correct'?'<span class="tag ok">Last: correct</span>':'<span class="tag bad">Last: wrong</span>';
+    const nr=x.next_review?(x.next_review<t?`<span class="over">Revision overdue</span>`:x.next_review===t?'<span class="tag due">Revise today</span>':`Revise ${fmt(x.next_review)}`):'';
+    return `<div class="ritem"><span class="qn">${i+1}</span><div class="rx">${qSnippet(x)}<div class="meta">${tp?esc(tp.name):'No topic'}${d?', '+d:''} ${st} ${nr}${x.figure_paths.length?' <span class="tag">Figure</span>':''}</div></div>
+    <div class="a"><button class="btn sm" data-act="practice1" data-id="${x.id}">Practise</button><button class="btn sm ghost" data-act="edit" data-id="${x.id}">Edit</button></div></div>`;}).join('')
+    :`<div class="empty">${all.length?'No questions match these filters.':'No questions yet. Add screenshots and the AI will pull the questions out for you.'}${all.length?'':`<div style="margin-top:12px"><a class="btn pri" href="#/add/${sid}">Add questions</a></div>`}</div>`}
+   ${l.length>shown.length?`<button class="more" data-act="slmore" data-sid="${sid}">Show ${Math.min(60,l.length-shown.length)} more</button>`:''}</div>`;
+};
+
+/* ================================================================ answer checking */
+function optKeyOf(x,ans){
+  const a=String(ans??'').trim();if(!a)return null;
+  const opts=x.options||[];
+  const m=a.match(/^\(?\s*([A-Za-z0-9])\s*\)?\s*\.?$/);
+  if(m){
+    const k=m[1].toUpperCase(),o=opts.find(o=>String(o.key).trim().toUpperCase()===k);
+    if(o)return o.key;
+    if(/[1-9]/.test(k)&&opts[+k-1])return opts[+k-1].key;
+    if(/[A-Z]/.test(k)&&opts[k.charCodeAt(0)-65])return opts[k.charCodeAt(0)-65].key;
+  }
+  const n=normT(a),o=opts.find(o=>normT(o.text)===n);
+  return o?o.key:null;
+}
+function parseNum(s){
+  let t=String(s??'').toLowerCase().trim();
+  if(!t)return null;
+  t=t.replace(/\\[dt]?frac\s*\{([^}]*)\}\s*\{([^}]*)\}/g,'$1/$2').replace(/\$|\\%|%|₹|rs\.?|inr|,/g,'').replace(/\\left|\\right|\\,/g,'').trim();
+  let m=t.match(/^(-)?\s*(\d+)\s+(\d+)\s*\/\s*(\d+)/);
+  if(m){const v=+m[2]+(+m[3])/(+m[4]);return m[1]?-v:v;}
+  m=t.match(/^(-?\d*\.?\d+)\s*\/\s*(-?\d*\.?\d+)/);
+  if(m&&+m[2]!==0)return (+m[1])/(+m[2]);
+  m=t.match(/-?\d*\.?\d+(e-?\d+)?/);
+  return m?parseFloat(m[0]):null;
+}
+function canCheck(x){
+  if(x.qtype==='mcq')return optKeyOf(x,x.answer)!=null;
+  return String(x.answer||'').trim()!=='';
+}
+function isCorrect(x,given){
+  if(x.qtype==='mcq'){const k=optKeyOf(x,x.answer);return k!=null&&String(given)===String(k);}
+  const alts=String(x.answer||'').split('|').map(s=>s.trim()).filter(Boolean);
+  if(x.qtype==='numeric'){
+    const g=parseNum(given);if(g==null)return false;
+    return alts.some(a=>{const v=parseNum(a);return v!=null&&Math.abs(v-g)<=Math.max(1e-9,Math.abs(v)*0.0015);});
+  }
+  return alts.some(a=>normT(a)===normT(given));
+}
+function answerHtml(x){
+  if(x.qtype==='mcq'){
+    const k=optKeyOf(x,x.answer),o=(x.options||[]).find(o=>o.key===k);
+    return o?`<b>${esc(o.key)}.</b> <span class="rt">${rich(o.text)}</span>`:(x.answer?`<span class="rt">${rich(x.answer)}</span>`:'<span class="muted">No answer saved for this question yet.</span>');
+  }
+  return x.answer?`<span class="rt">${rich(x.answer.split('|').join(' or '))}</span>`:'<span class="muted">No answer saved for this question yet.</span>';
+}
+
+/* ================================================================ sessions */
+function startSession(mode,ids,back,title){
+  ids=ids.filter(id=>D.qm.has(id));
+  if(!ids.length){toast('No questions to show.');return;}
+  SESSION={mode,ids,i:0,back:back||'#/',title:title||'',st:{},stats:{done:0,correct:0}};
+  try{localStorage.setItem('np_session',JSON.stringify({mode,ids,i:0,back,title,user:D.user.id}));}catch(e){}
+  location.hash='#/session';
+  if(location.hash==='#/session')render();
+}
+function saveSessionPos(){try{if(SESSION)localStorage.setItem('np_session',JSON.stringify({mode:SESSION.mode,ids:SESSION.ids,i:SESSION.i,back:SESSION.back,title:SESSION.title,user:D.user.id}));}catch(e){}}
+function restoreSession(){
+  try{const s=JSON.parse(localStorage.getItem('np_session')||'null');
+    if(s&&s.user===D.user.id&&Array.isArray(s.ids)){SESSION={...s,ids:s.ids.filter(id=>D.qm.has(id)),st:{},stats:{done:0,correct:0}};if(SESSION.i>=SESSION.ids.length)SESSION.i=Math.max(0,SESSION.ids.length-1);return SESSION.ids.length>0;}}catch(e){}
+  return false;
+}
+function endSession(){SESSION=null;try{localStorage.removeItem('np_session');}catch(e){}}
+function item(id){return SESSION.st[id]||(SESSION.st[id]={given:'',checked:false,correct:false,shownBefore:false,ansOpen:false,notesOpen:false,start:Date.now(),attemptId:null,grade:null,easy:false,retry:false,saving:false,editNotes:false});}
+
+V.session=()=>{
+  if(!SESSION&&!restoreSession())return `<div class="box empty">No practice session is running. <a href="#/">Go to the dashboard</a></div>`;
+  const S=SESSION;
+  if(S.finished)return finishView();
+  const id=S.ids[S.i],x=D.qm.get(id);
+  if(!x){S.ids.splice(S.i,1);if(!S.ids.length){endSession();return `<div class="box empty">The questions in this session were deleted. <a href="#/">Go home</a></div>`;}S.i=Math.min(S.i,S.ids.length-1);return V.session();}
+  const it=item(id),s=subj(x.subject_id),tp=topic(x.topic_id),rev=S.mode==='revision';
+  const locked=it.checked&&!it.retry;
+  const opts=x.qtype==='mcq'?`<div class="opts${locked?' locked':''}" role="radiogroup" aria-label="Options">${(x.options||[]).map((o,i)=>{
+      const sel=String(it.given)===String(o.key),right=it.checked&&it.correct&&sel;
+      return `<button class="opt${right?' right':''}" role="radio" aria-checked="${sel}" data-act="pick" data-k="${esc(o.key)}" ${locked?'tabindex="-1"':''}><span class="k">${esc(o.key)}</span><span class="rt">${rich(o.text)}</span></button>`;}).join('')}</div>`
+    :`<label class="f" for="ans">${x.qtype==='numeric'?'Your answer (a number, fraction or decimal)':'Your answer'}</label><input id="ans" class="ansin" type="text" ${x.qtype==='numeric'?'inputmode="decimal"':''} autocomplete="off" value="${esc(it.given)}" ${locked?'readonly':''} data-f="given">`;
+  const checkable=canCheck(x);
+  let acts='';
+  if(!it.checked||it.retry)acts=`<button class="btn pri" data-act="check" ${checkable?'':'disabled'}>${it.saving?'<span class="spin"></span> Checking':'Check answer'}</button>${!checkable?'<span class="small muted">This question has no saved answer yet. <button class="btn sm ghost" data-act="edit" data-id="'+x.id+'">Add it</button></span>':''}<button class="btn ghost" data-act="next">Skip</button>`;
+  else acts=`<button class="btn pri" data-act="next">${S.i<S.ids.length-1?'Next question':'Finish'}</button>${!it.correct?'<button class="btn" data-act="retry">Try again</button>':''}${rev&&it.correct&&it.grade==='good'&&!it.easy?'<button class="btn sm ghost" data-act="easy">Too easy, show it less often</button>':''}`;
+  const yayCls=it.yayDone?'yay':'yay anim';if(it.checked&&it.correct)it.yayDone=true;
+  const feedback=it.checked&&it.correct?`<div class="${yayCls}" role="status">Gulshan loves u 😉</div>`:it.checked?`<p class="small muted" role="status" style="margin-top:12px">Answer recorded.</p>`:'';
+  const sched=it.checked&&it.next?`<p class="small muted" style="margin-top:8px">Next revision ${fmt(it.next)}, ${rel(it.next)}.${it.easy?' Marked as easy.':''}</p>`:'';
+  const figs=x.figure_paths.length?`<div class="figs">${x.figure_paths.map(p=>`<img data-path="${esc(p)}" alt="Figure for this question" data-act="zoom">`).join('')}</div>`:'';
+  return `<div class="sess"><div class="stop"><a class="btn sm" href="${esc(S.back)}" data-act="exit">Exit</a>
+    <div class="grow"><div class="small"><b>${rev?'Revision':'Practice'}</b>, question ${S.i+1} of ${S.ids.length}</div><div class="track"><i style="width:${pct(S.i+(it.checked?1:0),S.ids.length)}%"></i></div></div></div>
+   <article class="qcard" aria-labelledby="qt">
+    <div class="qmeta"><span class="dot c-${esc(s?s.color:'rose')}"></span>${esc(s?s.short_name:'')}${tp?', '+esc(tp.name):''}${x.difficulty?', '+{1:'Easy',2:'Medium',3:'Hard'}[x.difficulty]:''}${x.source?', '+esc(x.source):''}</div>
+    ${x.directions?`<div class="dir"><div class="dlab">Directions</div><div class="rt">${rich(x.directions)}</div></div>`:''}
+    ${figs}
+    <div class="qtext rt" id="qt">${rich(x.question_text)}</div>
+    ${opts}
+    <div class="qact">${acts}</div>${feedback}${sched}
+   </article>
+   <div class="reveal"><button class="rbar" data-act="toggleAns" aria-expanded="${it.ansOpen}" aria-controls="ansb">Show answer <span class="chev">▾</span></button>
+    <div class="rbody" id="ansb" ${it.ansOpen?'':'hidden'}><div class="lab">Correct answer</div><div>${answerHtml(x)}</div>${x.explanation?`<div class="lab">Explanation</div><div class="rt">${rich(x.explanation)}</div>`:''}</div></div>
+   ${rev?`<div class="reveal"><button class="rbar" data-act="toggleNotes" aria-expanded="${it.notesOpen}" aria-controls="notesb">Notes <span class="chev">▾</span></button>
+    <div class="rbody" id="notesb" ${it.notesOpen?'':'hidden'}>${it.editNotes?`<textarea id="notesEdit" aria-label="Notes">${esc(x.notes)}</textarea><div class="row" style="margin-top:8px"><button class="btn sm pri" data-act="saveNotes">Save notes</button><button class="btn sm ghost" data-act="cancelNotes">Cancel</button></div>`
+      :`${x.notes?`<div class="rt">${rich(x.notes)}</div>`:'<p class="muted">No notes for this question yet.</p>'}<button class="btn sm" style="margin-top:10px" data-act="editNotes">${x.notes?'Edit notes':'Add notes'}</button>`}</div></div>`:''}
+   <div class="sfoot"><button class="btn sm ghost" data-act="prevq" ${S.i?'':'disabled'}>Previous question</button><span class="row"><button class="btn sm ghost" data-act="edit" data-id="${x.id}">Edit question</button>${x.screenshot_paths.length?`<button class="btn sm ghost" data-act="shot" data-id="${x.id}">Original screenshot</button>`:''}</span></div></div>`;
+};
+function finishView(){
+  const S=SESSION,st=S.stats;
+  return `<div class="sess"><div class="qcard" style="text-align:center;padding:36px 24px">
+    <h1>${S.mode==='revision'?'Revision done':'Session done'}</h1>
+    <p class="muted" style="margin-top:6px">${st.done?`You answered ${plural(st.done,'question')} and got ${st.correct} right.`:'You skipped through this set.'}${S.mode==='revision'?' Each one now has its next revision date.':''}</p>
+    <div class="row" style="justify-content:center;margin-top:22px"><a class="btn pri" href="#/" data-act="exit">Back to dashboard</a>${S.back&&S.back!=='#/'?`<a class="btn" href="${esc(S.back)}" data-act="exit">Back to subject</a>`:''}</div></div></div>`;
+}
+async function checkCurrent(){
+  const S=SESSION,id=S.ids[S.i],x=D.qm.get(id),it=item(id);
+  if(it.saving)return;
+  const inp=$('#ans');if(inp)it.given=inp.value;
+  if(String(it.given).trim()===''){toast(x.qtype==='mcq'?'Choose an option first.':'Type your answer first.');return;}
+  const ok=isCorrect(x,it.given);
+  if(it.retry){ // second try: no new record, just feedback
+    it.retry=false;it.checked=true;it.correct=ok;it.yayDone=false;render();return;
+  }
+  it.saving=true;render();
+  try{
+    const secs=Math.round((Date.now()-it.start)/1000);
+    const r=await q(sb.rpc('record_attempt',{p_question:id,p_mode:S.mode,p_given:String(it.given),p_correct:ok,p_shown:it.shownBefore,p_seconds:Math.min(secs,36000),p_today:today()}));
+    it.checked=true;it.correct=ok;it.attemptId=r.attempt_id;it.grade=r.grade;it.next=r.scheduled?r.next_review:null;
+    S.stats.done++;if(ok)S.stats.correct++;
+    Object.assign(x,{attempt_count:x.attempt_count+1,correct_count:x.correct_count+(ok?1:0),last_result:ok?'correct':'wrong',last_attempt_at:new Date().toISOString()});
+    if(r.scheduled){x.next_review=r.next_review;x.interval_days=r.interval_days;x.lapses=r.lapses;}
+    D.att.push({id:r.attempt_id,question_id:id,mode:S.mode,day:today(),is_correct:ok,grade:r.grade,scheduled:r.scheduled,created_at:new Date().toISOString()});
+  }catch(e){toast('Could not save your answer. '+errText(e),true);}
+  it.saving=false;render();
+}
+async function markEasy(){
+  const S=SESSION,id=S.ids[S.i],x=D.qm.get(id),it=item(id);
+  try{const r=await q(sb.rpc('mark_easy',{p_attempt:it.attemptId,p_today:today()}));
+    it.easy=true;it.next=r.next_review;x.next_review=r.next_review;x.interval_days=r.interval_days;render();}
+  catch(e){toast(errText(e),true);}
+}
+function nextQ(){
+  const S=SESSION;
+  if(S.i<S.ids.length-1){S.i++;item(S.ids[S.i]).start=Date.now();saveSessionPos();render();window.scrollTo(0,0);}
+  else{S.finished=true;try{localStorage.removeItem('np_session');}catch(e){}render();}
+}
+function reviseIds(sid){const B=revBuckets(sid);return [...B.over,...B.due].map(x=>x.id);}
+
+/* ================================================================ AI function call */
+async function callFn(body){
+  const {data,error}=await sb.functions.invoke(CFG.fn,{body});
+  if(error){
+    let msg=error.message||'The AI service did not respond.';
+    try{const j=await error.context.json();if(j&&j.error)msg=j.error;}catch(e){}
+    if(/Failed to send|fetch/i.test(msg))msg='Could not reach the AI function. Check that "question-ai" is deployed in Supabase.';
+    throw new Error(msg);
+  }
+  if(data&&data.error)throw new Error(data.error);
+  return data;
+}
+
+/* ================================================================ image helpers */
+const LOCAL=new Map(); // storage path -> local object URL for screenshots added in this visit
+async function compress(file){
+  const bmp=await createImageBitmap(file);
+  const max=2000,sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const c=document.createElement('canvas');c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(bmp,0,0,c.width,c.height);
+  return await new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Could not read this image.')),'image/jpeg',0.88));
+}
+async function imgSrc(path){
+  if(LOCAL.has(path))return LOCAL.get(path);
+  const get=await signed([path]);return get(path);
+}
+async function cropBlob(path,box){
+  const src=await imgSrc(path);if(!src)throw new Error('Could not load the screenshot to crop the figure.');
+  const img=new Image();if(!src.startsWith('blob:'))img.crossOrigin='anonymous';
+  await new Promise((res,rej)=>{img.onload=res;img.onerror=()=>rej(new Error('Could not load the screenshot to crop the figure.'));img.src=src;});
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const x=Math.max(0,Math.floor(box.x*W)),y=Math.max(0,Math.floor(box.y*H));
+  const w=Math.max(8,Math.min(W-x,Math.ceil(box.w*W))),h=Math.max(8,Math.min(H-y,Math.ceil(box.h*H)));
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(img,x,y,w,h,0,0,w,h);
+  return await new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Could not crop the figure.')),'image/jpeg',0.93));
+}
+async function putFile(path,blob){
+  const {error}=await sb.storage.from(CFG.bucket).upload(path,blob,{contentType:blob.type||'image/jpeg',upsert:false});
+  if(error)throw error;
+}
+
+/* ================================================================ drafts */
+function blankDraft(sid){
+  return {key:'m:'+uuid(),upload_id:null,directions:'',question_text:'',qtype:'mcq',
+    options:['A','B','C','D'].map(k=>({key:k,text:''})),answer:'',answer_source:'manual',explanation:'',notes:'',source:'',
+    subject_id:sid||(D.subjects[0]&&D.subjects[0].id),topic_id:null,new_topic:'',difficulty:2,
+    has_figure:false,use_figure:false,figure_box:{x:.1,y:.1,w:.8,h:.4},screenshot_path:null,include:true,dup:[],ackIds:[],dupChecked:false,errs:[]};
+}
+function draftFromAI(q){
+  const up=k=>{k=String(k||'').trim().replace(/^\(|\)$|\.$/g,'');return /^[a-z]$/i.test(k)?k.toUpperCase():k;};
+  return {...blankDraft(q.subject_id),...q,options:(q.options||[]).map(o=>({key:up(o.key),text:String(o.text||'')})),answer:q.qtype==='mcq'?up(q.answer):q.answer,
+    use_figure:!!q.has_figure,figure_box:q.has_figure?q.figure_box:{x:.1,y:.1,w:.8,h:.4},notes:'',source:'',include:true,dup:[],ackIds:[],dupChecked:false,errs:[]};
+}
+function draftFromQuestion(x){
+  return {...blankDraft(x.subject_id),key:'e:'+x.id,edit_id:x.id,directions:x.directions,question_text:x.question_text,qtype:x.qtype,
+    options:(x.options||[]).map(o=>({...o})),answer:x.qtype==='mcq'?(optKeyOf(x,x.answer)||x.answer):x.answer,explanation:x.explanation,notes:x.notes,source:x.source,
+    subject_id:x.subject_id,topic_id:x.topic_id,difficulty:x.difficulty||2,screenshot_path:x.screenshot_paths[0]||null,
+    keep_figures:[...x.figure_paths],answer_source:'saved'};
+}
+let EDIT=null;
+function findDraft(key){if(EDIT&&EDIT.key===key)return EDIT;return REVIEW&&REVIEW.drafts.find(d=>d.key===key);}
+const persistReview=debounce(()=>{try{
+  const k='np_review_'+D.user.id;
+  if(REVIEW&&REVIEW.drafts.length)localStorage.setItem(k,JSON.stringify(REVIEW));else localStorage.removeItem(k);
+}catch(e){}},400);
+function restoreReview(){try{const r=JSON.parse(localStorage.getItem('np_review_'+D.user.id)||'null');if(r&&Array.isArray(r.drafts)&&r.drafts.length)REVIEW=r;}catch(e){}}
+
+function draftHtml(d,n,isEdit){
+  const subjOpts=D.subjects.map(s=>`<option value="${s.id}"${s.id===d.subject_id?' selected':''}>${esc(s.short_name)}</option>`).join('');
+  const tsel=(!d.topic_id&&d.new_topic)?'__new':(d.topic_id||'');
+  const topOpts=`<option value="">No topic</option>${topicsOf(d.subject_id).map(t=>`<option value="${t.id}"${t.id===tsel?' selected':''}>${esc(t.name)}</option>`).join('')}<option value="__new"${tsel==='__new'?' selected':''}>New topic…</option>`;
+  const K=esc(d.key);
+  const src={shown:'<span class="tag ok">Answer read from screenshot</span>',solved:'<span class="tag warn">Answer worked out by AI, please check</span>',unknown:'<span class="tag bad">No answer found, add it below</span>'}[d.answer_source]||'';
+  const ansField=d.qtype==='mcq'
+    ?`<select data-d="${K}" data-f="answer"><option value="">Not known yet</option>${d.options.map(o=>`<option value="${esc(o.key)}"${String(o.key)===String(d.answer)?' selected':''}>${esc(o.key)}</option>`).join('')}</select>`
+    :`<input type="text" data-d="${K}" data-f="answer" value="${esc(d.answer)}" placeholder="${d.qtype==='numeric'?'e.g. 42, 3/4, 12.5. Use | between accepted answers':'Expected answer. Use | between accepted answers'}">`;
+  const dup=(d.dup||[]).filter(m=>!d.ackIds.includes(m.id));
+  const dupHtml=dup.length?`<div class="dup" role="alert"><b>Possible duplicate.</b> ${dup.length===1?'A similar question is':'Similar questions are'} already in your bank.
+    ${dup.map(m=>`<div class="m"><span class="small">${m.internal?'Same as question '+m.internal+' in this list':esc(plainLines(m.question_text).slice(0,140))+(m.verdict?' <span class="tag warn">'+esc(m.verdict)+'</span>':'')}</span>${m.internal?'':`<button class="btn sm" data-act="view" data-id="${m.id}">View existing</button>`}</div>`).join('')}
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="dupSkip" data-d="${K}">Skip this question</button><button class="btn sm" data-act="dupKeep" data-d="${K}">Save anyway</button></div></div>`:'';
+  const figs=(d.keep_figures||[]).length?`<div class="field"><label class="f">Saved figures</label><div class="row">${d.keep_figures.map(p=>`<span style="position:relative;display:inline-block"><img data-path="${esc(p)}" alt="Figure" style="max-height:110px;border:1px solid var(--line);border-radius:8px"><button class="btn sm danger" data-act="dropFig" data-d="${K}" data-p="${esc(p)}">Remove</button></span>`).join('')}</div></div>`:'';
+  const cropper=d.screenshot_path?`<div class="field"><label class="row" style="gap:8px;cursor:pointer"><input type="checkbox" data-d="${K}" data-f="use_figure" ${d.use_figure?'checked':''}> <span>${isEdit?'Crop a new figure from the screenshot':'Attach a figure (chart, table or diagram) from the screenshot'}</span></label>
+    ${d.use_figure?`<p class="small muted" style="margin:6px 0">Drag across the screenshot to select the figure. Include its title, legend and labels.</p>
+    <div class="crop" data-crop="${K}"><img ${LOCAL.has(d.screenshot_path)?`src="${LOCAL.get(d.screenshot_path)}"`:`data-path="${esc(d.screenshot_path)}"`} alt="Screenshot"><div class="bx" style="left:${d.figure_box.x*100}%;top:${d.figure_box.y*100}%;width:${d.figure_box.w*100}%;height:${d.figure_box.h*100}%"></div></div>`:''}</div>`:'';
+  return `<section class="draft${d.include?'':' off'}" id="dr-${K}" aria-label="Question ${n}">
+   <div class="dh">${isEdit?'<b>Question</b>':`<label><input type="checkbox" data-d="${K}" data-f="include" ${d.include?'checked':''}> Save question ${n}</label>`}<span class="row">${src}${isEdit?'':`<button class="btn sm ghost danger" data-act="dropDraft" data-d="${K}">Remove</button>`}</span></div>
+   ${dupHtml}
+   <div class="dgrid">
+    <div><label class="f">Subject</label><select data-d="${K}" data-f="subject_id">${subjOpts}</select></div>
+    <div><label class="f">Topic</label><select data-d="${K}" data-f="topic_sel">${topOpts}</select>${tsel==='__new'?`<input type="text" style="margin-top:6px" data-d="${K}" data-f="new_topic" value="${esc(d.new_topic)}" placeholder="New topic name">`:''}</div>
+    <div><label class="f">Answer type</label><select data-d="${K}" data-f="qtype"><option value="mcq"${d.qtype==='mcq'?' selected':''}>Options</option><option value="numeric"${d.qtype==='numeric'?' selected':''}>Number</option><option value="text"${d.qtype==='text'?' selected':''}>Text</option></select></div>
+    <div><label class="f">Difficulty</label><select data-d="${K}" data-f="difficulty">${[[1,'Easy'],[2,'Medium'],[3,'Hard']].map(([v,l])=>`<option value="${v}"${+d.difficulty===v?' selected':''}>${l}</option>`).join('')}</select></div>
+   </div>
+   <div class="field"><label class="f">Directions or passage (shared by a set of questions, optional)</label><textarea data-d="${K}" data-f="directions" rows="2">${esc(d.directions)}</textarea></div>
+   <div class="field"><label class="f">Question</label><textarea data-d="${K}" data-f="question_text" rows="3">${esc(d.question_text)}</textarea>
+    <div class="pv"><div class="lab">How it will look</div><div class="rt" data-pv="${K}">${rich(d.question_text)||'<span class="muted">Type the question above</span>'}</div></div></div>
+   ${d.qtype==='mcq'?`<div class="field"><label class="f">Options</label>${d.options.map((o,i)=>`<div class="optrow"><input type="text" class="k" aria-label="Option label" data-d="${K}" data-f="optkey" data-i="${i}" value="${esc(o.key)}"><input type="text" aria-label="Option ${esc(o.key)} text" data-d="${K}" data-f="opttext" data-i="${i}" value="${esc(o.text)}"><button class="btn sm ghost" data-act="optDel" data-d="${K}" data-i="${i}" aria-label="Remove option ${esc(o.key)}">✕</button></div>`).join('')}<button class="btn sm" data-act="optAdd" data-d="${K}">Add option</button></div>`:''}
+   <div class="field" style="max-width:420px"><label class="f">Correct answer</label>${ansField}</div>
+   <div class="field"><label class="f">Explanation (optional)</label><textarea data-d="${K}" data-f="explanation" rows="3">${esc(d.explanation)}</textarea></div>
+   <div class="field"><label class="f">My notes (shown only in revision mode)</label><textarea data-d="${K}" data-f="notes" rows="2" placeholder="Tricks, mistakes to avoid, formulas">${esc(d.notes)}</textarea></div>
+   <div class="field" style="max-width:420px"><label class="f">Source (optional)</label><input type="text" data-d="${K}" data-f="source" value="${esc(d.source)}" placeholder="e.g. Adda247 mock 12, RRB PO 2025"></div>
+   ${figs}${cropper}
+   ${d.screenshot_path&&!isEdit?`<button class="btn sm ghost" data-act="shotPath" data-p="${esc(d.screenshot_path)}">View original screenshot</button>`:''}
+   ${(d.errs||[]).length?`<div class="errs">${d.errs.map(esc).join('<br>')}</div>`:''}
+  </section>`;
+}
+function rerenderDraft(d){
+  if(EDIT&&EDIT.key===d.key){openEditModalContent();return;}
+  const el=document.getElementById('dr-'+d.key);if(!el)return render();
+  const n=REVIEW.drafts.indexOf(d)+1;
+  el.outerHTML=draftHtml(d,n,false);
+  const ne=document.getElementById('dr-'+d.key);math(ne);hydrateImages(ne);updateSaveBar();
+}
+function onDraftInput(el,type){
+  const d=findDraft(el.dataset.d);if(!d)return;
+  const f=el.dataset.f,v=el.type==='checkbox'?el.checked:el.value;
+  const isSel=el.tagName==='SELECT'||el.type==='checkbox';
+  if(isSel&&type!=='change')return;          // selects and boxes: act once, on change
+  let re=false;
+  switch(f){
+    case 'subject_id':d.subject_id=v;d.topic_id=null;d.new_topic='';d.dupChecked=false;re=true;break;
+    case 'topic_sel':if(v==='__new'){d.topic_id=null;d.new_topic=d.new_topic&&d.new_topic.trim()?d.new_topic:' ';}else{d.topic_id=v||null;d.new_topic='';}re=true;break;
+    case 'qtype':d.qtype=v;if(v==='mcq'&&!d.options.length)d.options=['A','B','C','D'].map(k=>({key:k,text:''}));d.answer='';re=true;break;
+    case 'difficulty':d.difficulty=+v;break;
+    case 'optkey':d.options[+el.dataset.i].key=v.trim();re=type==='change';break;
+    case 'opttext':d.options[+el.dataset.i].text=v;d.dupChecked=false;break;
+    case 'include':d.include=v;el.closest('.draft').classList.toggle('off',!v);updateSaveBar();break;
+    case 'use_figure':d.use_figure=v;re=true;break;
+    case 'new_topic':d.new_topic=v;break;
+    case 'question_text':d.question_text=v;d.dupChecked=false;livePreview(d);break;
+    case 'directions':d.directions=v;d.dupChecked=false;break;
+    default:d[f]=v;
+  }
+  if(re){
+    if(f==='topic_sel'&&v==='__new'){rerenderDraft(d);const i=document.querySelector(`#dr-${CSS.escape(d.key)} [data-f="new_topic"]`);if(i){i.value='';d.new_topic=' ';i.focus();}}
+    else rerenderDraft(d);
+  }
+  if(!EDIT||EDIT.key!==d.key)persistReview();
+}
+const livePreview=debounce(d=>{const el=document.querySelector(`[data-pv="${CSS.escape(d.key)}"]`);if(!el)return;el.removeAttribute('data-k');el.innerHTML=rich(d.question_text)||'<span class="muted">Type the question above</span>';math(el.parentElement);},350);
+
+/* crop box drawing */
+let CROP=null;
+document.addEventListener('pointerdown',e=>{
+  const c=e.target.closest('.crop');if(!c)return;
+  const d=findDraft(c.dataset.crop);if(!d)return;
+  e.preventDefault();c.setPointerCapture(e.pointerId);
+  const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  CROP={c,d,r,x0:x,y0:y};
+});
+document.addEventListener('pointermove',e=>{
+  if(!CROP)return;
+  const {c,d,r,x0,y0}=CROP,cl=v=>Math.max(0,Math.min(1,v));
+  const x=cl((e.clientX-r.left)/r.width),y=cl((e.clientY-r.top)/r.height);
+  d.figure_box={x:Math.min(x0,x),y:Math.min(y0,y),w:Math.abs(x-x0),h:Math.abs(y-y0)};
+  const b=$('.bx',c);Object.assign(b.style,{left:d.figure_box.x*100+'%',top:d.figure_box.y*100+'%',width:d.figure_box.w*100+'%',height:d.figure_box.h*100+'%'});
+});
+document.addEventListener('pointerup',()=>{
+  if(!CROP)return;const d=CROP.d;CROP=null;
+  if(d.figure_box.w<.02||d.figure_box.h<.02){toast('That selection is too small. Drag across the whole figure.');}
+  if(!EDIT||EDIT.key!==d.key)persistReview();
+});
+
+/* ================================================================ views: add + review */
+let UP={files:[],subject:'',busy:false};
+V.add=sid=>{
+  if(sid&&UP.subject===''&&subj(sid))UP.subject=sid;
+  const pend=D.uploads.filter(u=>u.status!=='saved');
+  const stTxt={uploaded:'Not read yet',processing:'Was being read',extracted:'Ready to review',failed:'Reading failed'};
+  return `<h1>Add questions</h1><p class="muted">Upload screenshots from any mock test, app or PDF. The AI finds every question, then you check them before anything is saved.</p>
+  <section class="sec">
+   <div class="drop" id="drop" data-act="pickfile" tabindex="0" role="button" aria-label="Choose screenshots"><b>Drop screenshots here, paste with Ctrl+V, or click to choose</b><span class="muted small">PNG, JPG or WebP. Several at once is fine.</span></div>
+   ${UP.files.length?`<div class="thumbs">${UP.files.map(f=>`<div class="thumb"><img src="${f.url}" alt="${esc(f.file.name)}">${UP.busy||f.status==='done'?'':`<button class="x" data-act="unfile" data-id="${f.id}" aria-label="Remove ${esc(f.file.name)}">×</button>`}<div class="st${f.status==='error'?' bad':''}">${esc(f.msg||'Ready')}</div></div>`).join('')}</div>`:''}
+   <div class="row" style="margin-top:16px"><label class="f" for="hint" style="margin:0">Subject</label>
+    <select id="hint" data-f="uphint"><option value="">Let the AI decide</option>${D.subjects.map(s=>`<option value="${s.id}"${UP.subject===s.id?' selected':''}>${esc(s.short_name)}</option>`).join('')}</select>
+    <button class="btn pri" data-act="extract" ${UP.files.some(f=>f.status!=='done')&&!UP.busy?'':'disabled'}>${UP.busy?'<span class="spin"></span> Reading screenshots':'Find questions'}</button>
+    <span class="muted small">or</span><button class="btn" data-act="manual" data-sid="${UP.subject||sid||''}">Type a question yourself</button></div>
+  </section>
+  ${REVIEW&&REVIEW.drafts.length?`<section class="sec box row" style="justify-content:space-between"><span>You have ${plural(REVIEW.drafts.length,'question')} waiting for review.</span><a class="btn soft" href="#/review">Continue reviewing</a></section>`:''}
+  ${pend.length?`<section class="sec"><div class="sech"><h2>Unfinished uploads</h2><span class="small muted">Screenshots stay here until their questions are saved or you discard them.</span></div>
+   <div class="list">${pend.map(u=>`<div class="ritem"><img data-path="${esc(u.storage_path)}" alt="Screenshot" style="width:72px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--line)">
+    <div class="rx"><div>${esc(stTxt[u.status]||u.status)}${u.status==='extracted'&&u.result?', '+plural((u.result.questions||[]).length,'question')+' found':''}</div><div class="meta">${new Date(u.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}${u.error?' <span class="over">'+esc(u.error)+'</span>':''}</div></div>
+    <div class="a">${u.status==='extracted'?`<button class="btn sm pri" data-act="reviewUp" data-id="${u.id}">Review</button>`:`<button class="btn sm" data-act="retryUp" data-id="${u.id}">Read again</button>`}<button class="btn sm ghost danger" data-act="discardUp" data-id="${u.id}">Discard</button></div></div>`).join('')}</div></section>`:''}`;
+};
+function addFiles(list){
+  const ok=[...list].filter(f=>/^image\/(png|jpe?g|webp)$/.test(f.type));
+  if(ok.length<list.length)toast('Only PNG, JPG and WebP images can be used.',true);
+  for(const file of ok)UP.files.push({id:uuid(),file,url:URL.createObjectURL(file),status:'new',msg:'Ready'});
+  if(!location.hash.startsWith('#/add'))location.hash='#/add';else render();
+}
+async function processFile(f){
+  try{
+    if(!f.upload_id){
+      f.msg='Uploading';render();
+      const blob=await compress(f.file);
+      const path=`${D.user.id}/screens/${uuid()}.jpg`;
+      await putFile(path,blob);
+      LOCAL.set(path,URL.createObjectURL(blob));
+      const row=await q(sb.from('uploads').insert({storage_path:path,subject_hint:UP.subject||null}).select().single());
+      D.uploads.push(row);f.upload_id=row.id;f.path=path;
+    }
+    f.msg='Reading questions';render();
+    const r=await callFn({action:'extract',upload_id:f.upload_id});
+    const u=D.uploads.find(u=>u.id===f.upload_id);if(u){u.status='extracted';u.result={questions:r.questions};u.error=null;}
+    f.status='done';f.msg=r.questions.length?plural(r.questions.length,'question')+' found':'No questions found';
+    return r.questions.map(draftFromAI);
+  }catch(e){
+    f.status='error';f.msg=errText(e);
+    const u=D.uploads.find(u=>u.id===f.upload_id);if(u){u.status='failed';u.error=f.msg;}
+    return [];
+  }
+}
+async function runExtract(){
+  if(UP.busy)return;UP.busy=true;render();
+  const todo=UP.files.filter(f=>f.status!=='done');let drafts=[];
+  for(let i=0;i<todo.length;i+=2){
+    const res=await Promise.all(todo.slice(i,i+2).map(processFile));
+    res.forEach(r=>drafts.push(...r));render();
+  }
+  UP.busy=false;
+  if(drafts.length){
+    UP.files=UP.files.filter(f=>f.status!=='done');
+    await addToReview(drafts);
+  }else{render();if(todo.every(f=>f.status==='error'))toast('No questions could be read. See the message under each screenshot.',true);else toast('No questions were found in these screenshots.');}
+}
+async function addToReview(drafts){
+  REVIEW=REVIEW||{drafts:[]};
+  const have=new Set(REVIEW.drafts.map(d=>d.key));
+  for(const d of drafts)if(!have.has(d.key))REVIEW.drafts.push(d);
+  persistReview();
+  location.hash='#/review';render();
+  await runDedupe(REVIEW.drafts.filter(d=>!d.dupChecked));
+}
+async function runDedupe(list){
+  list=list.filter(d=>d.question_text.trim().length>=12&&!d.edit_id);
+  if(!list.length)return;
+  // duplicates inside this list
+  const seen=new Map();
+  REVIEW.drafts.forEach((d,i)=>{const k=normT(d.directions+' '+d.question_text+' '+d.options.map(o=>o.text).join(' '));
+    d.dup=(d.dup||[]).filter(m=>!m.internal);
+    if(k.length>12&&seen.has(k))d.dup.push({id:'i'+seen.get(k),internal:seen.get(k)});else if(k.length>12)seen.set(k,i+1);});
+  try{
+    const r=await callFn({action:'dedupe',drafts:list.map(d=>({key:d.key,question_text:d.question_text,directions:d.directions,options:d.options,subject_id:d.subject_id}))});
+    for(const d of list){d.dup=[...(d.dup||[]).filter(m=>m.internal),...((r.matches||{})[d.key]||[])];d.dupChecked=true;}
+  }catch(e){toast('Duplicate check could not run: '+errText(e),true);for(const d of list)d.dupChecked=true;}
+  persistReview();
+  if(location.hash==='#/review')render();
+}
+V.review=()=>{
+  if(!REVIEW||!REVIEW.drafts.length)return `<div class="box empty">Nothing to review. <a href="#/add">Add screenshots</a></div>`;
+  const ds=REVIEW.drafts,n=ds.filter(d=>d.include).length;
+  return `<h1>Check the questions</h1><p class="muted">${plural(ds.length,'question')} ready. Fix anything the AI misread, untick what you don't want, then save. Nothing is saved until you click Save.</p>
+   <div class="sec">${ds.map((d,i)=>draftHtml(d,i+1,false)).join('')}</div>
+   <div class="savebar"><span id="savecount">${n} of ${ds.length} selected</span><span class="row"><button class="btn ghost" data-act="discardReview">Discard all</button><button class="btn" data-act="manual" data-sid="${ds[ds.length-1].subject_id}">Add another by typing</button><button class="btn pri" data-act="saveReview" ${n?'':'disabled'}>Save ${plural(n,'question')}</button></span></div>`;
+};
+function updateSaveBar(){
+  if(!REVIEW)return;const n=REVIEW.drafts.filter(d=>d.include).length;
+  const c=$('#savecount');if(c)c.textContent=`${n} of ${REVIEW.drafts.length} selected`;
+  const b=$('[data-act="saveReview"]');if(b){b.disabled=!n;b.textContent=`Save ${plural(n,'question')}`;}
+}
+function validate(d){
+  const e=[];
+  if(!d.question_text.trim())e.push('Add the question text.');
+  if(!d.subject_id)e.push('Choose a subject.');
+  if(d.qtype==='mcq'){
+    const filled=d.options.filter(o=>o.text.trim()&&o.key.trim());
+    if(filled.length<2)e.push('Add at least two options.');
+    const keys=filled.map(o=>o.key.toUpperCase());if(new Set(keys).size!==keys.length)e.push('Each option needs a different label.');
+  }
+  if(d.use_figure&&(d.figure_box.w<.02||d.figure_box.h<.02))e.push('Select the figure on the screenshot, or untick "Attach a figure".');
+  if(!d.topic_id&&d.new_topic&&!d.new_topic.trim())e.push('Type a name for the new topic, or choose an existing one.');
+  return e;
+}
+async function saveDraft(d){
+  let topic_id=d.topic_id;
+  const nt=(d.new_topic||'').trim();
+  if(!topic_id&&nt){
+    const ex=D.topics.find(t=>t.subject_id===d.subject_id&&normT(t.name)===normT(nt));
+    if(ex)topic_id=ex.id;
+    else{const row=await q(sb.from('topics').insert({subject_id:d.subject_id,name:nt,sort:100+topicsOf(d.subject_id).length}).select().single());D.topics.push(row);topic_id=row.id;}
+  }
+  if(topic_id&&(!topic(topic_id)||topic(topic_id).subject_id!==d.subject_id))topic_id=null;
+  const figs=[...(d.keep_figures||[])];
+  if(d.use_figure&&d.screenshot_path){
+    const blob=await cropBlob(d.screenshot_path,d.figure_box);
+    const path=`${D.user.id}/figures/${uuid()}.jpg`;await putFile(path,blob);figs.push(path);
+  }
+  const opts=d.qtype==='mcq'?d.options.filter(o=>o.text.trim()&&o.key.trim()).map(o=>({key:o.key.trim(),text:o.text.trim()})):[];
+  const row={subject_id:d.subject_id,topic_id,qtype:d.qtype,directions:d.directions.trim(),question_text:d.question_text.trim(),options:opts,
+    answer:String(d.answer||'').trim(),explanation:d.explanation.trim(),notes:d.notes.trim(),difficulty:+d.difficulty||null,source:d.source.trim(),
+    screenshot_paths:d.screenshot_path?[d.screenshot_path]:[],figure_paths:figs};
+  if(d.edit_id){
+    const saved=await q(sb.from('questions').update(row).eq('id',d.edit_id).select().single());
+    const old=D.qm.get(d.edit_id);
+    const gone=(old?old.figure_paths:[]).filter(p=>!figs.includes(p));
+    if(gone.length)sb.storage.from(CFG.bucket).remove(gone);
+    Object.assign(old,saved);return saved;
+  }
+  const saved=await q(sb.from('questions').insert(row).select().single());
+  D.qs.push(saved);D.qm.set(saved.id,saved);return saved;
+}
+async function saveReview(){
+  const sel=REVIEW.drafts.filter(d=>d.include);
+  let bad=false;
+  for(const d of sel){d.errs=validate(d);if(d.errs.length)bad=true;}
+  if(bad){render();const f=REVIEW.drafts.find(d=>d.include&&d.errs.length);if(f)document.getElementById('dr-'+f.key)?.scrollIntoView({behavior:'smooth',block:'center'});toast('Some questions need fixing before saving.',true);return;}
+  const btn=$('[data-act="saveReview"]');if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Checking for duplicates';}
+  await runDedupe(sel.filter(d=>!d.dupChecked));
+  const blocking=sel.filter(d=>(d.dup||[]).some(m=>!d.ackIds.includes(m.id)));
+  if(blocking.length){render();document.getElementById('dr-'+blocking[0].key)?.scrollIntoView({behavior:'smooth',block:'center'});toast('Possible duplicates found. Choose Skip or Save anyway for each.',true);return;}
+  if(btn)btn.innerHTML='<span class="spin"></span> Saving';
+  let ok=0,firstSid=null;
+  for(const d of sel){
+    try{await saveDraft(d);d.saved=true;ok++;firstSid=firstSid||d.subject_id;}
+    catch(e){d.errs=['Could not save: '+errText(e)];}
+  }
+  const failed=sel.filter(d=>!d.saved);
+  const doneUploads=new Set(REVIEW.drafts.filter(d=>d.upload_id).map(d=>d.upload_id));
+  for(const d of failed)if(d.upload_id)doneUploads.delete(d.upload_id);
+  if(doneUploads.size){
+    await sb.from('uploads').update({status:'saved',updated_at:new Date().toISOString()}).in('id',[...doneUploads]);
+    D.uploads=D.uploads.filter(u=>!doneUploads.has(u.id));
+  }
+  REVIEW.drafts=failed;if(!failed.length)REVIEW=null;persistReview();
+  if(ok)toast(`Saved ${plural(ok,'question')}.`);
+  if(failed.length){render();toast(`${plural(failed.length,'question')} could not be saved. See the message on each.`,true);}
+  else location.hash=firstSid?'#/s/'+firstSid:'#/';
+}
+
+/* ================================================================ modals */
+let lastFocus=null;
+function openModal(html,cls=''){
+  lastFocus=document.activeElement;
+  const m=$('#modal'),b=$('#mbox');b.className='mbox '+cls;b.innerHTML=html;m.classList.add('open');
+  math(b);hydrateImages(b);
+  const f=b.querySelector('[autofocus]')||b.querySelector('button,input,select,textarea');if(f)f.focus();
+}
+function closeModal(){
+  $('#modal').classList.remove('open');$('#mbox').innerHTML='';EDIT=null;
+  if(lastFocus&&document.contains(lastFocus))lastFocus.focus();
+}
+const mhead=t=>`<div class="mh"><h2 id="mt">${t}</h2><button class="btn sm ghost" data-act="close" aria-label="Close">Close</button></div>`;
+
+function viewModal(id){
+  const x=D.qm.get(id);if(!x){toast('That question no longer exists.');return;}
+  const s=subj(x.subject_id),tp=topic(x.topic_id);
+  openModal(`${mhead('Question')}
+   <div class="qmeta"><span class="dot c-${esc(s?s.color:'rose')}"></span>${esc(s?s.short_name:'')}${tp?', '+esc(tp.name):''}${x.next_review?', next revision '+fmt(x.next_review):''}${x.attempt_count?`, solved ${x.correct_count} of ${x.attempt_count} times`:''}</div>
+   ${x.directions?`<div class="dir"><div class="dlab">Directions</div><div class="rt">${rich(x.directions)}</div></div>`:''}
+   ${x.figure_paths.length?`<div class="figs">${x.figure_paths.map(p=>`<img data-path="${esc(p)}" alt="Figure">`).join('')}</div>`:''}
+   <div class="qtext rt">${rich(x.question_text)}</div>
+   ${x.qtype==='mcq'?`<div class="opts locked">${x.options.map(o=>`<div class="opt" style="cursor:default"><span class="k">${esc(o.key)}</span><span class="rt">${rich(o.text)}</span></div>`).join('')}</div>`:''}
+   <details class="reveal"><summary class="rbar">Show answer <span class="chev">▾</span></summary><div class="rbody"><div class="lab">Correct answer</div>${answerHtml(x)}${x.explanation?`<div class="lab">Explanation</div><div class="rt">${rich(x.explanation)}</div>`:''}</div></details>
+   <details class="reveal"><summary class="rbar">Notes <span class="chev">▾</span></summary><div class="rbody">${x.notes?`<div class="rt">${rich(x.notes)}</div>`:'<p class="muted">No notes yet.</p>'}</div></details>
+   <div class="row" style="margin-top:16px"><button class="btn pri" data-act="practice1" data-id="${x.id}">Practise this question</button>${x.next_review&&x.next_review<=today()?`<button class="btn soft" data-act="revise1" data-id="${x.id}">Revise now</button>`:''}<button class="btn" data-act="edit" data-id="${x.id}">Edit</button>${x.screenshot_paths.length?`<button class="btn ghost" data-act="shot" data-id="${x.id}">Original screenshot</button>`:''}</div>`);
+}
+function openEdit(id){
+  const x=D.qm.get(id);if(!x)return;
+  EDIT=draftFromQuestion(x);openEditModalContent();
+}
+function openEditModalContent(){
+  const d=EDIT;if(!d)return;
+  const html=`${mhead('Edit question')}${draftHtml(d,1,true)}
+   <div class="row" style="justify-content:space-between;margin-top:8px"><button class="btn danger" data-act="delQ" data-id="${d.edit_id}">Delete question</button>
+   <span class="row">${d.screenshot_path?`<button class="btn ghost" data-act="shotPath" data-p="${esc(d.screenshot_path)}">Original screenshot</button>`:''}<button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="saveEdit">Save changes</button></span></div>`;
+  const m=$('#modal');
+  if(m.classList.contains('open')&&$('#mbox').querySelector('#dr-'+CSS.escape(d.key))){const b=$('#mbox');const st=m.scrollTop;b.innerHTML=html;math(b);hydrateImages(b);m.scrollTop=st;}
+  else openModal(html,'wide');
+}
+async function saveEdit(){
+  const d=EDIT;d.errs=validate(d);
+  if(d.errs.length){openEditModalContent();return;}
+  const b=$('[data-act="saveEdit"]');if(b){b.disabled=true;b.innerHTML='<span class="spin"></span> Saving';}
+  try{await saveDraft(d);closeModal();toast('Changes saved.');render();}
+  catch(e){d.errs=['Could not save: '+errText(e)];openEditModalContent();}
+}
+function confirmBox(title,text,okLabel,act,id){
+  openModal(`${mhead(esc(title))}<p>${text}</p><div class="row" style="justify-content:flex-end;margin-top:18px"><button class="btn" data-act="close">Cancel</button><button class="btn pri" style="background:var(--over);border-color:var(--over)" data-act="${act}" data-id="${esc(id)}">${esc(okLabel)}</button></div>`);
+}
+async function deleteQuestion(id){
+  const x=D.qm.get(id);if(!x)return closeModal();
+  try{
+    await q(sb.from('questions').delete().eq('id',id));
+    const files=[...x.figure_paths,...x.screenshot_paths.filter(p=>!D.qs.some(o=>o.id!==id&&o.screenshot_paths.includes(p))&&!D.uploads.some(u=>u.storage_path===p))];
+    if(files.length)sb.storage.from(CFG.bucket).remove(files);
+    D.qs=D.qs.filter(o=>o.id!==id);D.att=D.att.filter(a=>a.question_id!==id);indexQs();
+    if(SESSION){SESSION.ids=SESSION.ids.filter(i=>i!==id);if(SESSION.i>=SESSION.ids.length)SESSION.i=Math.max(0,SESSION.ids.length-1);}
+    closeModal();toast('Question deleted.');render();
+  }catch(e){toast(errText(e),true);}
+}
+async function showShot(path){
+  const get=await signed([path]);const u=LOCAL.get(path)||get(path);
+  if(!u){toast('Could not load the screenshot.',true);return;}
+  openModal(`${mhead('Original screenshot')}<img src="${esc(u)}" alt="Original screenshot">`,'img');
+}
+function zoom(src){openModal(`${mhead('Figure')}<img src="${esc(src)}" alt="Figure">`,'img');}
+
+function topicsModal(sid){
+  const s=subj(sid);if(!s)return;
+  const ts=topicsOf(sid);
+  openModal(`${mhead('Topics in '+esc(s.short_name))}
+   <div class="row" style="margin-bottom:14px"><input type="text" id="newTopic" placeholder="New topic name" style="max-width:320px" aria-label="New topic name"><button class="btn pri" data-act="topicAdd" data-sid="${sid}">Add topic</button></div>
+   <div class="list topicl">${ts.map(t=>{const n=D.qs.filter(x=>x.topic_id===t.id).length;return `<div class="ritem"><input type="text" value="${esc(t.name)}" data-topic="${t.id}" aria-label="Topic name"><span class="small muted" style="white-space:nowrap">${plural(n,'question')}</span><div class="a"><button class="btn sm" data-act="topicRename" data-id="${t.id}">Rename</button><button class="btn sm ghost danger" data-act="topicDel" data-id="${t.id}" data-sid="${sid}">Delete</button></div></div>`;}).join('')||'<div class="empty">No topics yet.</div>'}</div>
+   <p class="small muted" style="margin-top:10px">Deleting a topic keeps its questions. They move to "No topic".</p>`);
+}
+function settingsModal(){
+  const S=D.settings,f=(k,l)=>`<div class="field"><label class="f" for="${k}">${l}</label><input type="number" min="0" max="500" id="${k}" value="${S[k]}"></div>`;
+  openModal(`${mhead('Targets and account')}
+   <div class="dgrid" style="grid-template-columns:1fr 1fr">${f('daily_revision_target','Revisions per day')}${f('daily_practice_target','Questions practised per day')}${f('weekly_revision_target','Revisions per week')}${f('weekly_practice_target','Questions practised per week')}</div>
+   <div class="row" style="justify-content:flex-end"><button class="btn pri" data-act="saveSettings">Save targets</button></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+   <p class="small muted">Signed in as ${esc(D.user.email)}</p>
+   <div class="row" style="margin-top:10px"><button class="btn" data-act="export">Download a backup of my questions</button><button class="btn" data-act="signout">Sign out</button></div>`);
+}
+async function saveSettings(){
+  const keys=['daily_revision_target','daily_practice_target','weekly_revision_target','weekly_practice_target'];
+  const row={};for(const k of keys)row[k]=Math.max(0,Math.min(500,parseInt($('#'+k).value,10)||0));
+  try{const r=await q(sb.from('user_settings').upsert({user_id:D.user.id,...row,updated_at:new Date().toISOString()}).select().single());D.settings=r;closeModal();toast('Targets saved.');render();}
+  catch(e){toast(errText(e),true);}
+}
+async function exportData(){
+  try{
+    const att=await fetchAll('attempts');
+    const blob=new Blob([JSON.stringify({exported_at:new Date().toISOString(),subjects:D.subjects,topics:D.topics,questions:D.qs,attempts:att},null,1)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nupur-prep-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
+  }catch(e){toast(errText(e),true);}
+}
+
+/* ================================================================ shell + auth */
+function shell(body,cur){
+  const tabs=`<a href="#/" ${cur==='home'?'aria-current="page"':''}>Home</a>`+D.subjects.map(s=>`<a href="#/s/${s.id}" ${cur===s.id?'aria-current="page"':''}><span class="dot c-${esc(s.color)}"></span>${esc(s.short_name)}</a>`).join('');
+  const addHref='#/add'+(subj(cur)?'/'+cur:'');
+  return `<header class="top"><div class="topin"><a class="brand" href="#/">Nupur's Prep</a><nav class="tabs" aria-label="Subjects">${tabs}</nav>
+   <div class="topact toprel"><a class="btn pri sm" href="${addHref}"><span aria-hidden="true">+</span><span class="lbl">Add question</span></a>
+   <button class="me" data-act="menu" aria-label="Account menu" aria-expanded="${UI.menu}">${esc((D.user.email||'N')[0].toUpperCase())}</button>
+   ${UI.menu?`<div class="menu"><div class="em">${esc(D.user.email)}</div><button data-act="settings">Targets and settings</button><button data-act="export">Download backup</button><button data-act="signout">Sign out</button></div>`:''}</div></div></header>
+   <main id="main" tabindex="-1">${body}</main>`;
+}
+let AUTH={mode:'in',busy:false,err:'',info:''};
+function authView(){
+  const up=AUTH.mode==='up';
+  return `<div class="auth"><form class="authbox" id="authform" novalidate>
+   <h1>Nupur's Prep</h1><p class="muted" style="margin-bottom:22px">Your banking-exam question bank and revision plan.</p>
+   <div class="field"><label class="f" for="em">Email</label><input type="email" id="em" autocomplete="email" required></div>
+   <div class="field"><label class="f" for="pw">Password</label><input type="password" id="pw" autocomplete="${up?'new-password':'current-password'}" minlength="6" required></div>
+   ${AUTH.err?`<p class="errs" role="alert" style="margin-bottom:10px">${esc(AUTH.err)}</p>`:''}${AUTH.info?`<p class="small" role="status" style="margin-bottom:10px">${esc(AUTH.info)}</p>`:''}
+   <button class="btn pri" type="submit" ${AUTH.busy?'disabled':''}>${AUTH.busy?'<span class="spin"></span> Please wait':up?'Create account':'Sign in'}</button>
+   <p class="small muted" style="margin-top:16px;text-align:center">${up?'Already have an account?':'New here?'} <button type="button" class="btn sm ghost" data-act="authmode">${up?'Sign in':'Create an account'}</button></p>
+  </form></div>`;
+}
+async function onAuthSubmit(e){
+  e.preventDefault();
+  const email=$('#em').value.trim(),pw=$('#pw').value;
+  if(!email||pw.length<6){AUTH.err='Enter your email and a password of at least 6 characters.';return renderAuth(email);}
+  AUTH.busy=true;AUTH.err='';AUTH.info='';renderAuth(email);
+  try{
+    if(AUTH.mode==='up'){
+      const {data,error}=await sb.auth.signUp({email,password:pw});if(error)throw error;
+      if(!data.session){AUTH.busy=false;AUTH.info='Account created, but Supabase is asking for email confirmation. Turn off "Confirm email" in Supabase, then sign in.';AUTH.mode='in';return renderAuth(email);}
+      await afterLogin(data.session.user);
+    }else{
+      const {data,error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;
+      await afterLogin(data.user);
+    }
+  }catch(err){
+    AUTH.busy=false;
+    const m=errText(err);
+    AUTH.err=/invalid login/i.test(m)?'Email or password is wrong.':/already registered/i.test(m)?'This email already has an account. Sign in instead.':m;
+    renderAuth(email);
+  }
+}
+function renderAuth(email){app.innerHTML=authView();if(email)$('#em').value=email;$('#authform').addEventListener('submit',onAuthSubmit);(email?$('#pw'):$('#em')).focus();}
+async function afterLogin(user){
+  D.user=user;app.innerHTML='<div class="loading"><span class="spin"></span> Loading your questions</div>';
+  try{await loadAll();}catch(e){app.innerHTML=`<div class="auth"><div class="authbox"><h1>Something went wrong</h1><p style="margin:10px 0 18px">${esc(errText(e))}</p><p class="small muted">If this is the first run, check that setup.sql was run in the Supabase SQL editor.</p><button class="btn pri" onclick="location.reload()">Try again</button></div></div>`;return;}
+  restoreReview();AUTH={mode:'in',busy:false,err:'',info:''};render();
+}
+
+/* ================================================================ render + routing */
+function render(){
+  if(!D.user){renderAuth();return;}
+  const h=location.hash.replace(/^#\/?/,''),[v,a]=h.split('/');
+  // keep focus in filter inputs across re-renders
+  const ae=document.activeElement,fk=ae&&ae.dataset&&ae.dataset.f&&!ae.dataset.d?ae.dataset.f:null,sel=fk&&ae.selectionStart;
+  let body,cur='';
+  if(v==='s'){body=V.subject(a);cur=a;}
+  else if(v==='add')body=V.add(a);
+  else if(v==='review')body=V.review();
+  else if(v==='session')body=V.session();
+  else{body=V.home();cur='home';}
+  app.innerHTML=shell(body,cur);
+  math(app);hydrateImages(app);
+  if(fk){const el=$(`[data-f="${fk}"]:not([data-d])`);if(el){el.focus();try{if(sel!=null)el.setSelectionRange(sel,sel);}catch(e){}}}
+}
+let lastRoute='';
+window.addEventListener('hashchange',()=>{
+  UI.menu=false;
+  const r=location.hash.split('/').slice(0,3).join('/');
+  if(r!==lastRoute){lastRoute=r;window.scrollTo(0,0);}
+  if(!location.hash.startsWith('#/session')&&SESSION&&SESSION.finished)endSession();
+  render();
+});
+
+/* ================================================================ events */
+document.addEventListener('click',async e=>{
+  if(UI.menu&&!e.target.closest('.menu')&&!e.target.closest('[data-act="menu"]')){UI.menu=false;render();}
+  if(e.target.id==='modal'){closeModal();return;}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const act=b.dataset.act,id=b.dataset.id;
+  const S=SESSION;
+  switch(act){
+    case 'close':closeModal();break;
+    case 'menu':UI.menu=!UI.menu;render();break;
+    case 'settings':UI.menu=false;render();settingsModal();break;
+    case 'saveSettings':saveSettings();break;
+    case 'export':UI.menu=false;exportData();break;
+    case 'signout':closeModal();endSession();await sb.auth.signOut();break;
+    case 'authmode':AUTH.mode=AUTH.mode==='in'?'up':'in';AUTH.err='';AUTH.info='';renderAuth($('#em')&&$('#em').value);break;
+    case 'more':UI[b.dataset.k]=!UI[b.dataset.k];render();break;
+    case 'slmore':UI['sl_'+b.dataset.sid]=(UI['sl_'+b.dataset.sid]||60)+60;render();break;
+    case 'fset':filt(subjOfRoute()).status=b.dataset.v;render();break;
+    case 'topics':topicsModal(b.dataset.sid);break;
+    case 'topicAdd':{const nm=$('#newTopic').value.trim();if(!nm)return toast('Type a topic name first.');
+      if(D.topics.some(t=>t.subject_id===b.dataset.sid&&normT(t.name)===normT(nm)))return toast('That topic already exists.');
+      try{const r=await q(sb.from('topics').insert({subject_id:b.dataset.sid,name:nm,sort:100+topicsOf(b.dataset.sid).length}).select().single());D.topics.push(r);topicsModal(b.dataset.sid);render();}catch(err){toast(errText(err),true);}break;}
+    case 'topicRename':{const inp=$(`[data-topic="${id}"]`),nm=inp.value.trim();if(!nm)return toast('A topic needs a name.');
+      try{const r=await q(sb.from('topics').update({name:nm}).eq('id',id).select().single());Object.assign(topic(id),r);toast('Topic renamed.');render();}catch(err){toast(errText(err),true);}break;}
+    case 'topicDel':{try{await q(sb.from('topics').delete().eq('id',id));D.topics=D.topics.filter(t=>t.id!==id);D.qs.forEach(x=>{if(x.topic_id===id)x.topic_id=null;});topicsModal(b.dataset.sid);render();toast('Topic deleted.');}catch(err){toast(errText(err),true);}break;}
+    case 'view':viewModal(id);break;
+    case 'edit':closeModal();openEdit(id);break;
+    case 'saveEdit':saveEdit();break;
+    case 'delQ':confirmBox('Delete this question?','It will be removed from your bank along with its practice and revision history. This cannot be undone.','Delete question','delQyes',id);break;
+    case 'delQyes':deleteQuestion(id);break;
+    case 'shot':{const x=D.qm.get(id);if(x&&x.screenshot_paths[0])showShot(x.screenshot_paths[0]);break;}
+    case 'shotPath':showShot(b.dataset.p);break;
+    case 'zoom':if(b.src)zoom(b.src);break;
+    case 'revise':startSession('revision',reviseIds(b.dataset.sid||null),b.dataset.sid?'#/s/'+b.dataset.sid:'#/');break;
+    case 'revise1':{closeModal();const x=D.qm.get(id);const ids=reviseIds(null).filter(i=>i!==id);startSession('revision',[id,...ids],x?'#/s/'+x.subject_id:'#/');break;}
+    case 'practice1':{closeModal();const x=D.qm.get(id);startSession('practice',[id],x?'#/s/'+x.subject_id:'#/');break;}
+    case 'letsgo':{const sid=b.dataset.sid,f=filt(sid);let l=practiceOrder(subjectList(sid)).map(x=>x.id);if(f.count!=='all')l=l.slice(0,+f.count);startSession('practice',l,'#/s/'+sid);break;}
+    case 'exit':e.preventDefault();{const back=S&&S.back||'#/';endSession();location.hash=b.getAttribute('href')||back;}break;
+    case 'pick':{if(!S)return;const it=item(S.ids[S.i]);if(it.checked&&!it.retry)return;it.given=b.dataset.k;render();$(`.opt[data-k="${CSS.escape(b.dataset.k)}"]`)?.focus();break;}
+    case 'check':checkCurrent();break;
+    case 'retry':{const it=item(S.ids[S.i]);it.retry=true;it.checked=false;it.given='';render();break;}
+    case 'next':nextQ();break;
+    case 'prevq':if(S&&S.i>0){S.i--;saveSessionPos();render();}break;
+    case 'easy':markEasy();break;
+    case 'toggleAns':{const it=item(S.ids[S.i]);it.ansOpen=!it.ansOpen;if(it.ansOpen&&!it.checked)it.shownBefore=true;render();break;}
+    case 'toggleNotes':{const it=item(S.ids[S.i]);it.notesOpen=!it.notesOpen;render();break;}
+    case 'editNotes':item(S.ids[S.i]).editNotes=true;render();$('#notesEdit')?.focus();break;
+    case 'cancelNotes':item(S.ids[S.i]).editNotes=false;render();break;
+    case 'saveNotes':{const x=D.qm.get(S.ids[S.i]),v=$('#notesEdit').value;
+      try{await q(sb.from('questions').update({notes:v}).eq('id',x.id));x.notes=v;item(x.id).editNotes=false;render();toast('Notes saved.');}catch(err){toast(errText(err),true);}break;}
+    case 'pickfile':$('#filepick').click();break;
+    case 'unfile':UP.files=UP.files.filter(f=>f.id!==id);render();break;
+    case 'extract':runExtract();break;
+    case 'manual':{const d=blankDraft(b.dataset.sid||UP.subject||null);REVIEW=REVIEW||{drafts:[]};REVIEW.drafts.push(d);persistReview();if(location.hash!=='#/review')location.hash='#/review';else{render();}setTimeout(()=>document.getElementById('dr-'+d.key)?.scrollIntoView({behavior:'smooth'}),50);break;}
+    case 'reviewUp':{const u=D.uploads.find(u=>u.id===id);if(u&&u.result)await addToReview((u.result.questions||[]).map(draftFromAI));break;}
+    case 'retryUp':{const u=D.uploads.find(u=>u.id===id);if(!u)return;b.disabled=true;b.innerHTML='<span class="spin"></span> Reading';
+      try{const r=await callFn({action:'extract',upload_id:id});u.status='extracted';u.result={questions:r.questions};u.error=null;
+        if(r.questions.length)await addToReview(r.questions.map(draftFromAI));else{toast('No questions were found in this screenshot.');render();}}
+      catch(err){u.status='failed';u.error=errText(err);render();toast(u.error,true);}break;}
+    case 'discardUp':{const u=D.uploads.find(u=>u.id===id);if(!u)return;
+      try{await q(sb.from('uploads').delete().eq('id',id));if(!D.qs.some(x=>x.screenshot_paths.includes(u.storage_path)))sb.storage.from(CFG.bucket).remove([u.storage_path]);
+        D.uploads=D.uploads.filter(x=>x.id!==id);if(REVIEW){REVIEW.drafts=REVIEW.drafts.filter(d=>d.upload_id!==id);if(!REVIEW.drafts.length)REVIEW=null;persistReview();}render();}catch(err){toast(errText(err),true);}break;}
+    case 'dropDraft':{REVIEW.drafts=REVIEW.drafts.filter(d=>d.key!==b.dataset.d);if(!REVIEW.drafts.length)REVIEW=null;persistReview();render();break;}
+    case 'dupSkip':{const d=findDraft(b.dataset.d);d.include=false;d.ackIds.push(...d.dup.map(m=>m.id));rerenderDraft(d);persistReview();break;}
+    case 'dupKeep':{const d=findDraft(b.dataset.d);d.ackIds.push(...d.dup.map(m=>m.id));rerenderDraft(d);persistReview();break;}
+    case 'optAdd':{const d=findDraft(b.dataset.d);const used=new Set(d.options.map(o=>o.key.toUpperCase()));let k='ABCDEFGH'.split('').find(c=>!used.has(c))||String(d.options.length+1);d.options.push({key:k,text:''});rerenderDraft(d);break;}
+    case 'optDel':{const d=findDraft(b.dataset.d);const o=d.options.splice(+b.dataset.i,1)[0];if(o&&String(d.answer)===String(o.key))d.answer='';rerenderDraft(d);break;}
+    case 'dropFig':{const d=findDraft(b.dataset.d);d.keep_figures=d.keep_figures.filter(p=>p!==b.dataset.p);rerenderDraft(d);break;}
+    case 'saveReview':saveReview();break;
+    case 'discardReview':confirmBox('Discard these questions?','The questions waiting for review will be removed. Their screenshots stay under Unfinished uploads, so you can read them again later.','Discard','discardYes','');break;
+    case 'discardYes':REVIEW=null;persistReview();closeModal();location.hash='#/add';break;
+  }
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&$('#modal').classList.contains('open')){closeModal();return;}
+  if(e.target.id==='drop'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();$('#filepick').click();return;}
+  if(!location.hash.startsWith('#/session')||!SESSION||SESSION.finished||$('#modal').classList.contains('open'))return;
+  const tag=(e.target.tagName||'').toLowerCase();
+  const typing=tag==='input'||tag==='textarea'||tag==='select';
+  const it=item(SESSION.ids[SESSION.i]),x=D.qm.get(SESSION.ids[SESSION.i]);
+  if(e.key==='Enter'&&!e.shiftKey&&(!typing||e.target.id==='ans')){
+    if(e.target.closest&&e.target.closest('button')&&!typing)return; // let buttons handle Enter themselves
+    e.preventDefault();
+    if(!it.checked||it.retry)checkCurrent();else nextQ();
+    return;
+  }
+  if(typing||e.ctrlKey||e.metaKey||e.altKey||!x||x.qtype!=='mcq'||(it.checked&&!it.retry))return;
+  const k=e.key.toUpperCase(),opts=x.options||[];
+  let o=opts.find(o=>String(o.key).toUpperCase()===k);
+  if(!o&&/^[1-9]$/.test(k))o=opts[+k-1];
+  if(o){it.given=o.key;render();}
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset&&el.dataset.d){onDraftInput(el,'input');return;}
+  if(!el.dataset||!el.dataset.f)return;
+  if(el.dataset.f==='given'&&SESSION){item(SESSION.ids[SESSION.i]).given=el.value;return;}
+  if(el.dataset.f==='q'){filt(subjOfRoute()).q=el.value;searchRender();}
+});
+const searchRender=debounce(render,250);
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.id==='filepick'){addFiles(el.files);el.value='';return;}
+  if(el.dataset&&el.dataset.d){onDraftInput(el,'change');return;}
+  if(!el.dataset||!el.dataset.f)return;
+  const f=el.dataset.f;
+  if(f==='uphint'){UP.subject=el.value;return;}
+  if(['topic','diff','count'].includes(f)){filt(subjOfRoute())[f]=el.value;render();}
+});
+function subjOfRoute(){const p=location.hash.replace(/^#\/?/,'').split('/');return p[0]==='s'?p[1]:'';}
+document.addEventListener('paste',e=>{
+  if(!D.user)return;
+  const files=[...(e.clipboardData&&e.clipboardData.files||[])].filter(f=>f.type.startsWith('image/'));
+  if(!files.length)return;
+  const t=(e.target.tagName||'').toLowerCase();if((t==='input'||t==='textarea')&&!location.hash.startsWith('#/add'))return;
+  e.preventDefault();addFiles(files);
+});
+document.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.add('on');}});
+document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d)d.classList.remove('on');});
+document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('on');addFiles(e.dataTransfer.files);}});
+window.addEventListener('beforeunload',e=>{if(UP.busy){e.preventDefault();e.returnValue='';}});
+
+/* ================================================================ start */
+sb.auth.onAuthStateChange((ev,session)=>{
+  if(ev==='SIGNED_OUT'){D.user=null;D.qs=[];D.att=[];REVIEW=null;SESSION=null;UP={files:[],subject:'',busy:false};location.hash='#/';renderAuth();}
+  else if(session&&D.user)D.user=session.user;
+});
+(async function boot(){
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session)await afterLogin(session.user);else renderAuth();
+  }catch(e){renderAuth();}
+})();
+})();
+</script>
+</body>
+</html>
