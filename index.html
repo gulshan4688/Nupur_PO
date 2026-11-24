@@ -873,6 +873,7 @@ V.add=sid=>{
     <button class="btn pri" data-act="extract" ${UP.files.some(f=>f.status!=='done')&&!UP.busy?'':'disabled'}>${UP.busy?'<span class="spin"></span> Reading screenshots':'Find questions'}</button>
     <span class="muted small">or</span><button class="btn" data-act="manual" data-sid="${UP.subject||sid||''}">Type a question yourself</button></div>
   </section>
+  <section class="sec"><div class="sech"><h2>Import previous-year questions</h2></div><div class="box">${importBox()}</div></section>
   ${REVIEW&&REVIEW.drafts.length?`<section class="sec box row" style="justify-content:space-between"><span>You have ${plural(REVIEW.drafts.length,'question')} waiting for review.</span><a class="btn soft" href="#/review">Continue reviewing</a></section>`:''}
   ${pend.length?`<section class="sec"><div class="sech"><h2>Unfinished uploads</h2><span class="small muted">Screenshots stay here until their questions are saved or you discard them.</span></div>
    <div class="list">${pend.map(u=>`<div class="ritem"><img data-path="${esc(u.storage_path)}" alt="Screenshot" style="width:72px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--line)">
@@ -989,7 +990,7 @@ async function saveDraft(d){
   if(d.edit_id){
     const saved=await q(sb.from('questions').update(row).eq('id',d.edit_id).select().single());
     const old=D.qm.get(d.edit_id);
-    const gone=(old?old.figure_paths:[]).filter(p=>!figs.includes(p));
+    const gone=(old?old.figure_paths:[]).filter(p=>!figs.includes(p)&&!D.qs.some(o=>o.id!==d.edit_id&&o.figure_paths.includes(p)));
     if(gone.length)sb.storage.from(CFG.bucket).remove(gone);
     Object.assign(old,saved);return saved;
   }
@@ -1022,6 +1023,156 @@ async function saveReview(){
   if(ok)toast(`Saved ${plural(ok,'question')}.`);
   if(failed.length){render();toast(`${plural(failed.length,'question')} could not be saved. See the message on each.`,true);}
   else location.hash=firstSid?'#/s/'+firstSid:'#/';
+}
+
+/* ================================================================ import from the PDF extractor */
+let IMP=null; // {items:[...], figFiles:Map(basename->File), stats, busy, done, progress}
+function unwrap(t){
+  // PDF text breaks lines mid-sentence: join them, but keep real line breaks
+  const lines=String(t||'').replace(/\r/g,'').split('\n').map(l=>l.trim()).filter((l,i,a)=>l||(i&&a[i-1]));
+  let out='';
+  for(let i=0;i<lines.length;i++){
+    const l=lines[i],nx=lines[i+1]||'';
+    out+=l;
+    if(i===lines.length-1)break;
+    const hard=/[.?:;!]$/.test(l)||/^(I{1,3}V?|IV|V)\.|^Statements?|^Conclusions?|^\(?[a-e1-9]\)|^\|/i.test(nx)||/^\|/.test(l)||!l;
+    out+=hard?'\n':' ';
+  }
+  return out.replace(/ {2,}/g,' ').trim();
+}
+const TOPIC_RULES={
+  Maths:[
+    [/pie[- ]?charts?|bar[- ]?(graph|chart)s?|line[- ]?graphs?|following table|table (given|below|shows)|data interpretation|study the (graph|chart|table)/i,'Data Interpretation'],
+    [/wrong number|number series|following series|come in place of .*series/i,'Number Series'],
+    [/\bI\.\s*.*[xy]\s*[²2]|quadratic|relation between x and y|if x\s*[><≥≤=]\s*y/i,'Quadratic Equations'],
+    [/approximate|place of (the )?question mark|\?\s*=|=\s*\?/i,'Simplification'],
+    [/boat|stream|train|speed|km\/h|km\/hr|m\/s|distance/i,'Time, Speed and Distance'],
+    [/\bwork\b|pipe|tap|cistern|tank/i,'Time and Work'],
+    [/profit|loss|discount|marked price|cost price|selling price/i,'Profit and Loss'],
+    [/interest/i,'Simple and Compound Interest'],
+    [/mixture|milk|water|allegation|alligation/i,'Mixture and Allegation'],
+    [/invest|partnership|business|profit share/i,'Partnership'],
+    [/probability/i,'Probability'],
+    [/how many ways|arrangements?|permutation|combination|selected/i,'Permutation and Combination'],
+    [/average/i,'Average'],
+    [/ratio|proportion|ages?\b/i,'Ratio and Proportion'],
+    [/divisible|remainder|consecutive|prime|number/i,'Number System'],
+    [/%|percent/i,'Percentage']],
+  Reasoning:[
+    [/statements?:[\s\S]*[≤≥<>=][\s\S]*conclusions?/i,'Inequality'],
+    [/statements?:[\s\S]*conclusions?|\b(all|some|no|only a few)\b .* are /i,'Syllogism'],
+    [/cod(e|ed|ing)|language/i,'Coding-Decoding'],
+    [/sitting|seated|facing (north|south|the cent)|circular table|row/i,'Seating Arrangement'],
+    [/north|south|east|west|\d+\s?m\b.*point|point .* of point/i,'Direction Sense'],
+    [/mother|father|brother|sister|daughter|son\b|husband|wife|related to|family/i,'Blood Relations'],
+    [/input|step/i,'Input-Output'],
+    [/sufficient|data sufficiency/i,'Data Sufficiency'],
+    [/rank|position from|from the (left|right|top|bottom)/i,'Order and Ranking'],
+    [/arrangement|series|element|letters?|digits?|word/i,'Alphanumeric Series'],
+    [/floor|box|born|month|year|weight|heav|light|height|tall|salary|day of the week|puzzle/i,'Puzzles']],
+  English:[
+    [/passage[\s\S]*blank|cloze|numbered blanks/i,'Cloze Test'],
+    [/read the (following )?passage|passage/i,'Reading Comprehension'],
+    [/error|incorrect part|grammatically/i,'Error Detection'],
+    [/rearrang|sequence|coherent paragraph|jumble/i,'Para Jumbles'],
+    [/blank|fill/i,'Fill in the Blanks'],
+    [/improve|replace|bold|highlighted/i,'Phrase Replacement'],
+    [/similar|opposite|meaning|synonym|antonym/i,'Vocabulary'],
+    [/usage|used correctly|appropriately/i,'Word Usage']]
+};
+function guessTopic(sid,text){
+  const s=subj(sid);if(!s)return null;
+  const rules=TOPIC_RULES[s.short_name];if(!rules)return null;
+  for(const [re,name] of rules){if(re.test(text)){const t=D.topics.find(t=>t.subject_id===sid&&t.name===name);if(t)return t.id;}}
+  return null;
+}
+function subjectFor(section){
+  const m={Reasoning:'Reasoning',Quant:'Maths',English:'English','General Awareness':'GA',Computer:'Computer',Hindi:null};
+  const short=m[section];if(!short)return null;
+  const s=D.subjects.find(s=>s.short_name===short);return s?s.id:null;
+}
+function impKey(r){return normT(r.directions+' '+r.question_text+' '+r.options.map(o=>o.text).join(' '));}
+async function readImportFile(file){
+  let raw;
+  try{raw=JSON.parse(await file.text());}catch(e){toast('That file is not a valid questions.json.',true);return;}
+  if(!Array.isArray(raw)||!raw.length||!('question' in raw[0]||'question_text' in raw[0])){toast('This does not look like the questions.json made by the extractor.',true);return;}
+  const perFile={};raw.forEach(x=>{perFile[x.source_file]=(perFile[x.source_file]||0)+1;});
+  const have=new Set(D.qs.map(x=>impKey(x)));
+  const seen=new Set();
+  const st={total:raw.length,partial:0,noOptions:0,noSubject:0,dupe:0,noAnswer:0,ok:0,figsNeeded:new Set(),bySubject:{}};
+  const items=[];
+  for(const x of raw){
+    if((perFile[x.source_file]||0)<10){st.partial++;continue;}          // half-read papers: unreliable
+    const sid=subjectFor(x.section);if(!sid){st.noSubject++;continue;}
+    const opts=Object.entries(x.options||{}).map(([k,v])=>({key:String(k).toUpperCase(),text:unwrap(v)})).filter(o=>o.text);
+    if(opts.length<2){st.noOptions++;continue;}
+    const directions=unwrap(x.directions||'');let question_text=unwrap(x.question||x.question_text||'');
+    // e.g. 'odd sentence out' questions keep their whole task in the directions
+    if(!question_text&&directions.length>150)question_text='Choose the correct option.';
+    if(!question_text){st.noOptions++;continue;}
+    const ans=String(x.answer||'').trim().toUpperCase();
+    let explanation=String(x.explanation||'').trim();
+    if(x.set_note)explanation=(explanation?explanation+'\n\n':'')+'Solution for the whole set:\n'+String(x.set_note).trim();
+    const label=[x.exam,x.stage,x.year].filter(Boolean).join(' ');
+    const r={subject_id:sid,topic_id:null,qtype:'mcq',directions,question_text,options:opts,answer:opts.some(o=>o.key===ans)?ans:'',
+      explanation,notes:'',difficulty:null,source:label?label+' PYQ':'PYQ',screenshot_paths:[],
+      figs:(x.figures||[]).map(f=>String(f.path||f).split(/[\\/]/).pop())};
+    r.topic_id=r.figs.length&&subj(sid).short_name==='Maths'?(D.topics.find(t=>t.subject_id===sid&&t.name==='Data Interpretation')||{}).id||null:guessTopic(sid,directions+' '+question_text);
+    const k=impKey(r);
+    if(have.has(k)||seen.has(k)){st.dupe++;continue;}
+    seen.add(k);
+    if(!r.answer)st.noAnswer++;
+    r.figs.forEach(f=>st.figsNeeded.add(f));
+    const sn=subj(sid).short_name;st.bySubject[sn]=(st.bySubject[sn]||0)+1;
+    items.push(r);
+  }
+  st.ok=items.length;
+  IMP={items,figFiles:new Map(),stats:st,withoutAnswer:true,busy:false,progress:0,done:0};
+  render();
+}
+function addImportFigures(files){
+  if(!IMP)return;
+  for(const f of files)if(/\.(png|jpe?g|webp)$/i.test(f.name))IMP.figFiles.set(f.name,f);
+  render();
+}
+function importBox(){
+  if(!IMP)return `<p class="muted small" style="margin-bottom:12px">Load the questions.json made by the PDF extractor, plus the images in its figures folder. Questions already in your bank are skipped, so importing again is safe.</p>
+    <label class="btn pri" for="impjson" style="cursor:pointer">Choose questions.json</label><input type="file" id="impjson" accept=".json,application/json" class="sr">`;
+  const st=IMP.stats,need=[...st.figsNeeded],found=need.filter(n=>IMP.figFiles.has(n)).length;
+  const n=IMP.items.filter(r=>IMP.withoutAnswer||r.answer).length;
+  if(IMP.busy)return `<p><span class="spin"></span> Importing ${IMP.done} of ${n} questions</p><div class="track" style="margin-top:10px"><i style="width:${pct(IMP.done,n)}%"></i></div><p class="small muted" style="margin-top:8px">Keep this page open until it finishes.</p>`;
+  return `<dl class="kv" style="margin-bottom:12px"><dt>Questions in the file</dt><dd>${st.total}</dd><dt>Ready to import</dt><dd>${st.ok}</dd>
+     ${Object.entries(st.bySubject).map(([k,v])=>`<dt style="padding-left:14px">${esc(k)}</dt><dd>${v}</dd>`).join('')}
+     <dt>Already in your bank, skipped</dt><dd>${st.dupe}</dd><dt>From papers that were only partly read, skipped</dt><dd>${st.partial}</dd><dt>Missing options or subject, skipped</dt><dd>${st.noOptions+st.noSubject}</dd></dl>
+   ${st.noAnswer?`<label class="row" style="gap:8px;cursor:pointer;margin-bottom:12px"><input type="checkbox" id="impnoans" ${IMP.withoutAnswer?'checked':''}> Also import the ${st.noAnswer} questions that have no answer key (you can add the answer later with Edit)</label>`:''}
+   ${need.length?`<div class="field"><p style="margin-bottom:6px"><b>Chart and table images:</b> ${found} of ${need.length} chosen.${found<need.length?' Choose the extractor\'s figures folder so chart questions keep their pictures.':''}</p>
+     <div class="row"><label class="btn" for="impfigdir" style="cursor:pointer">Choose figures folder</label><input type="file" id="impfigdir" webkitdirectory directory multiple class="sr">
+     <label class="btn ghost" for="impfigs" style="cursor:pointer">or choose image files</label><input type="file" id="impfigs" accept="image/png,image/jpeg" multiple class="sr"></div></div>`:''}
+   <div class="row" style="margin-top:6px"><button class="btn pri" data-act="impGo" ${n?'':'disabled'}>Import ${plural(n,'question')}</button><button class="btn ghost" data-act="impCancel">Cancel</button>
+   ${need.length&&found<need.length?`<span class="small muted">${need.length-found} chart questions would be imported without their picture.</span>`:''}</div>`;
+}
+async function runImport(){
+  if(!IMP||IMP.busy)return;
+  const rows=IMP.items.filter(r=>IMP.withoutAnswer||r.answer);
+  IMP.busy=true;IMP.done=0;render();
+  const figPath=new Map();let failed=0;
+  try{
+    // upload each figure once (questions in one set share it)
+    for(const name of new Set(rows.flatMap(r=>r.figs))){
+      const f=IMP.figFiles.get(name);if(!f)continue;
+      const path=`${D.user.id}/figures/pyq/${name.replace(/[^\w.-]/g,'_')}`;
+      const {error}=await sb.storage.from(CFG.bucket).upload(path,f,{contentType:f.type||'image/png',upsert:true});
+      if(!error)figPath.set(name,path);
+    }
+    for(let i=0;i<rows.length;i+=50){
+      const batch=rows.slice(i,i+50).map(r=>{const {figs,...row}=r;return {...row,figure_paths:figs.map(n=>figPath.get(n)).filter(Boolean)};});
+      try{const saved=await q(sb.from('questions').insert(batch).select());D.qs.push(...saved);}
+      catch(e){failed+=batch.length;console.error(e);}
+      IMP.done=Math.min(rows.length,i+50);render();
+    }
+  }finally{indexQs();}
+  const ok=rows.length-failed;IMP=null;render();
+  toast(failed?`Imported ${ok} questions. ${failed} could not be saved, try importing again.`:`Imported ${ok} questions.`,!!failed);
 }
 
 /* ================================================================ modals */
@@ -1078,7 +1229,7 @@ async function deleteQuestion(id){
   const x=D.qm.get(id);if(!x)return closeModal();
   try{
     await q(sb.from('questions').delete().eq('id',id));
-    const files=[...x.figure_paths,...x.screenshot_paths.filter(p=>!D.qs.some(o=>o.id!==id&&o.screenshot_paths.includes(p))&&!D.uploads.some(u=>u.storage_path===p))];
+    const files=[...x.figure_paths.filter(p=>!D.qs.some(o=>o.id!==id&&o.figure_paths.includes(p))),...x.screenshot_paths.filter(p=>!D.qs.some(o=>o.id!==id&&o.screenshot_paths.includes(p))&&!D.uploads.some(u=>u.storage_path===p))];
     if(files.length)sb.storage.from(CFG.bucket).remove(files);
     D.qs=D.qs.filter(o=>o.id!==id);D.att=D.att.filter(a=>a.question_id!==id);indexQs();
     if(SESSION){SESSION.ids=SESSION.ids.filter(i=>i!==id);if(SESSION.i>=SESSION.ids.length)SESSION.i=Math.max(0,SESSION.ids.length-1);}
@@ -1267,6 +1418,8 @@ document.addEventListener('click',async e=>{
     case 'optDel':{const d=findDraft(b.dataset.d);const o=d.options.splice(+b.dataset.i,1)[0];if(o&&String(d.answer)===String(o.key))d.answer='';rerenderDraft(d);break;}
     case 'dropFig':{const d=findDraft(b.dataset.d);d.keep_figures=d.keep_figures.filter(p=>p!==b.dataset.p);rerenderDraft(d);break;}
     case 'saveReview':saveReview();break;
+    case 'impGo':runImport();break;
+    case 'impCancel':IMP=null;render();break;
     case 'discardReview':confirmBox('Discard these questions?','The questions waiting for review will be removed. Their screenshots stay under Unfinished uploads, so you can read them again later.','Discard','discardYes','');break;
     case 'discardYes':REVIEW=null;persistReview();closeModal();location.hash='#/add';break;
   }
@@ -1301,6 +1454,9 @@ const searchRender=debounce(render,250);
 document.addEventListener('change',e=>{
   const el=e.target;
   if(el.id==='filepick'){addFiles(el.files);el.value='';return;}
+  if(el.id==='impjson'){if(el.files[0])readImportFile(el.files[0]);el.value='';return;}
+  if(el.id==='impfigdir'||el.id==='impfigs'){addImportFigures(el.files);el.value='';return;}
+  if(el.id==='impnoans'){IMP.withoutAnswer=el.checked;render();return;}
   if(el.dataset&&el.dataset.d){onDraftInput(el,'change');return;}
   if(!el.dataset||!el.dataset.f)return;
   const f=el.dataset.f;
@@ -1318,7 +1474,7 @@ document.addEventListener('paste',e=>{
 document.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.add('on');}});
 document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d)d.classList.remove('on');});
 document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('on');addFiles(e.dataTransfer.files);}});
-window.addEventListener('beforeunload',e=>{if(UP.busy){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(UP.busy||(IMP&&IMP.busy)){e.preventDefault();e.returnValue='';}});
 
 /* ================================================================ start */
 sb.auth.onAuthStateChange((ev,session)=>{
